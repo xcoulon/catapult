@@ -9,7 +9,6 @@ package org.rhd.katapult.github;
 
 import java.io.StringReader;
 import java.net.URI;
-import java.nio.file.Files;
 import java.util.Base64;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -27,10 +26,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.transport.PushResult;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 /**
  *
@@ -166,21 +161,21 @@ public class GithubResource
       }
    }
 
-   void push(String repo, String username, String accessToken) throws Exception
-   {
-      java.nio.file.Path tmpDir = Files.createTempDirectory("tmpdir");
-      try (Git git = Git.cloneRepository().setDirectory(tmpDir.toFile()).setURI("https://github.com/" + repo).call())
-      {
-         git.add().addFilepattern(".").call();
-         git.commit().setAll(true).setMessage("Initial Commit").call();
-         Iterable<PushResult> result = git.push()
-                  .setRemote("https://github.com/" + repo + ".git")
-                  .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, accessToken))
-                  .setPushAll().call();
-         for (PushResult pushResult : result)
-         {
-            System.out.println(pushResult.getMessages());
-         }
-      }
-   }
+   // void push(String repo, String username, String accessToken) throws Exception
+   // {
+   // java.nio.file.Path tmpDir = Files.createTempDirectory("tmpdir");
+   // try (Git git = Git.cloneRepository().setDirectory(tmpDir.toFile()).setURI("https://github.com/" + repo).call())
+   // {
+   // git.add().addFilepattern(".").call();
+   // git.commit().setAll(true).setMessage("Initial Commit").call();
+   // Iterable<PushResult> result = git.push()
+   // .setRemote("https://github.com/" + repo + ".git")
+   // .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, accessToken))
+   // .setPushAll().call();
+   // for (PushResult pushResult : result)
+   // {
+   // System.out.println(pushResult.getMessages());
+   // }
+   // }
+   // }
 }
