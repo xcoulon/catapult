@@ -11,6 +11,7 @@
    <artifactId>katapult-ear</artifactId>
    <packaging>ear</packaging>
    <build>
+      <finalName>katapult</finalName>
       <plugins>
          <plugin>
             <artifactId>maven-ear-plugin</artifactId>

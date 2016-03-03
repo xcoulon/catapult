@@ -21,4 +21,12 @@
          </plugin>
       </plugins>
    </build>
+   <dependencies>
+      <dependency>
+         <groupId>org.rhd.katapult</groupId>
+         <artifactId>github-service</artifactId>
+         <type>ejb</type>
+         <scope>provided</scope>
+      </dependency>
+   </dependencies>
 </project>
