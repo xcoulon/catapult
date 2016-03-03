@@ -9,6 +9,7 @@
       <relativePath>../../pom.xml</relativePath>
    </parent>
    <artifactId>github-service</artifactId>
+   <packaging>ejb</packaging>
    <dependencies>
       <dependency>
          <groupId>org.eclipse.jgit</groupId>
@@ -16,4 +17,15 @@
          <version>4.1.1.201511131810-r</version>
       </dependency>
    </dependencies>
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-ejb-plugin</artifactId>
+            <configuration>
+               <ejbVersion>3.0</ejbVersion>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
 </project>

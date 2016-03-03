@@ -2,12 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
+   <parent>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-parent</artifactId>
+      <version>20</version>
+   </parent>
    <groupId>org.rhd.katapult</groupId>
    <artifactId>katapult-parent</artifactId>
    <version>1.0.0-SNAPSHOT</version>
-   <build>
-      <finalName>parent</finalName>
-   </build>
    <packaging>pom</packaging>
    <properties>
       <maven.compiler.source>1.8</maven.compiler.source>
@@ -22,9 +24,38 @@
       <module>web</module>
       <module>ear</module>
    </modules>
-
    <dependencyManagement>
       <dependencies>
+         <!-- Project dependencies -->
+         <dependency>
+            <groupId>org.rhd.katapult</groupId>
+            <artifactId>katapult</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+         </dependency>
+         <dependency>
+            <groupId>org.rhd.katapult</groupId>
+            <artifactId>github-service</artifactId>
+            <version>${project.version}</version>
+            <type>ejb</type>
+         </dependency>
+         <dependency>
+            <groupId>org.rhd.katapult</groupId>
+            <artifactId>openshift-service</artifactId>
+            <version>${project.version}</version>
+            <type>ejb</type>
+         </dependency>
+         <dependency>
+            <groupId>org.rhd.katapult</groupId>
+            <artifactId>core-api</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.rhd.katapult</groupId>
+            <artifactId>core-impl</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <!-- External dependencies -->
          <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
