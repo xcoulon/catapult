@@ -25,6 +25,7 @@ class KohsukeGitHubRepositoryImpl implements GitHubRepository {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getGitTransportUrl() {
         return delegate.getGitTransportUrl();
     }
@@ -32,20 +33,7 @@ class KohsukeGitHubRepositoryImpl implements GitHubRepository {
     /**
      * {@inheritDoc}
      */
-    public String gitHttpTransportUrl() {
-        return delegate.gitHttpTransportUrl();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getName() {
-        return delegate.getName();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getFullName() {
         return delegate.getFullName();
     }

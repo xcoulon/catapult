@@ -15,20 +15,6 @@ public interface GitHubRepository {
     String getGitTransportUrl();
 
     /**
-     * Obtains the "http" protocol transport URL
-     *
-     * @return
-     */
-    String gitHttpTransportUrl();
-
-    /**
-     * Obtains the repository name (which does not include the owner)
-     *
-     * @return
-     */
-    String getName();
-
-    /**
      * Obtains the full repository name in form "owner/repoName"
      *
      * @return
