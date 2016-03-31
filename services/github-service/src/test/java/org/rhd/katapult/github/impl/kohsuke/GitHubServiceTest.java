@@ -4,6 +4,7 @@ import org.junit.*;
 import org.rhd.katapult.github.api.GitHubRepository;
 import org.rhd.katapult.github.api.GitHubService;
 import org.rhd.katapult.github.api.GitHubServiceFactory;
+import org.rhd.katapult.github.api.NoSuchRepositoryException;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -59,6 +60,11 @@ public class GitHubServiceTest {
         Assert.assertNotNull("Got null result in forking " + NAME_GITHUB_SOURCE_REPO, targetRepo);
         log.log(Level.INFO, "Forked " + NAME_GITHUB_SOURCE_REPO + " as " + targetRepo.getFullName() +
                 " available at " + targetRepo.getGitTransportUrl());
+    }
+
+    @Test(expected = NoSuchRepositoryException.class)
+    public void cannotForkNonexistentRepo(){
+        gitHubService.fork("ALRubinger/someRepoThatDoesNotAndWillNeverExist");
     }
 
 }
