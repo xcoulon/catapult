@@ -1,23 +1,30 @@
 # katapult
 Empower engineering teams using Red Hat technologies with an intuitive experience to quickly and confidently promote their code from development to production.
 
-Build and Deploy Katapult
--------------------------
+Prerequisites
+-------------
+1. Java
+2. Apache Maven
+3. A GitHub Account
 
-1. Make sure you have started the JBoss EAP server as described above.
-2. Open a command prompt and navigate to the root directory of this quickstart.
-3. Type this command to build and deploy the archive:
+* Log into GitHub and generate an access token for use here:
+--  https://help.github.com/articles/creating-an-access-token-for-command-line-use/
+* Create 2 environment variables:
+-- `GITHUB_USERNAME`, `GITHUB_TOKEN`
 
-        mvn clean install wildfly:deploy
+For instance you may put into your `~/.bash_profile`:
 
-4. This will deploy `ear/target/katapult.ear` to the running instance of the server.
+    export GITHUB_USERNAME=ALRubinger
+    export GITHUB_TOKEN=[token created from above]
+    
+Updates to `~./bash_profile` may require logging out of the shell to be visible; you may check 
+by typing into a terminal:
 
-Undeploy the Archive
---------------------
+    $ echo $GITHUB_USERNAME
 
-1. Make sure you have started the JBoss EAP server as described above.
-2. Open a command prompt and navigate to the root directory of this quickstart.
-3. When you are finished testing, type this command to undeploy the archive:
+Build and Run the Tests
+-----------------------
 
-        mvn wildfly:undeploy
+1. Execute:
 
+        $ mvn clean install
