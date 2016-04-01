@@ -12,7 +12,7 @@ public interface GitHubServiceLoader {
 
     /**
      * Creates and returns a new instance of {@link GitHubService} initialized with
-     * authentiation information from the required username and required password/token
+     * authentication information from the required username and required password/token
      *
      * @param githubUsername
      * @param githubToken
