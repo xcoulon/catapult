@@ -2,6 +2,7 @@ package org.rhd.katapult.openshift.impl.fabric8.openshift.client;
 
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
+import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.openshift.api.model.ProjectRequest;
 import io.fabric8.openshift.client.DefaultOpenShiftClient;
 import io.fabric8.openshift.client.OpenShiftClient;
@@ -17,6 +18,9 @@ import org.rhd.katapult.openshift.impl.OpenShiftProjectImpl;
  * @author <a href="mailto:alr@redhat.com">Andrew Lee Rubinger</a>
  */
 final class Fabric8OpenShiftClientServiceImpl implements OpenShiftService {
+
+    private static final int CODE_DUPLICATE_PROJECT = 409;
+    private static final String STATUS_REASON_DUPLICATE_PROJECT = "AlreadyExists";
 
     private final OpenShiftClient client;
 
@@ -44,18 +48,29 @@ final class Fabric8OpenShiftClientServiceImpl implements OpenShiftService {
      * {@inheritDoc}
      */
     @Override
-    public OpenShiftProject createProject(final String displayName) throws
+    public OpenShiftProject createProject(final String name) throws
             DuplicateProjectException,
             IllegalArgumentException {
 
         // Create
-        final ProjectRequest projectRequest = client.projectrequests().createNew().
-                withNewMetadata().
-                withName(displayName).
-                endMetadata().
-                done();
+        final ProjectRequest projectRequest;
+        try {
+            projectRequest = client.projectrequests().createNew().
+                    withNewMetadata().
+                    withName(name).
+                    endMetadata().
+                    done();
+        } catch (final KubernetesClientException kce) {
+            // Detect if duplicate project
+            if (kce.getCode() == CODE_DUPLICATE_PROJECT &&
+                    STATUS_REASON_DUPLICATE_PROJECT.equals(kce.getStatus().getReason()))
+            {
+                throw new DuplicateProjectException(name);
+            }
 
-        //TODO DuplicateProjectException handling and throwing
+            // Some other error, rethrow it
+            throw kce;
+        }
 
         // Populate value object and return it
         final String roundtripDisplayName = projectRequest.getMetadata().getName();

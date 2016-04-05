@@ -8,14 +8,14 @@ package org.rhd.katapult.openshift.api;
 public interface OpenShiftService {
 
     /**
-     * Creates a project with the specified, required displayName
+     * Creates a project with the specified, required name
      *
-     * @param displayName
+     * @param name
      * @return
      * @throws DuplicateProjectException
-     * @throws IllegalArgumentException  If the displayName is not specified
+     * @throws IllegalArgumentException  If the name is not specified
      */
-    OpenShiftProject createProject(String displayName) throws DuplicateProjectException,
+    OpenShiftProject createProject(String name) throws DuplicateProjectException,
             IllegalArgumentException;
 
 }
