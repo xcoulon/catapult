@@ -3,9 +3,8 @@ package org.kontinuity.catapult.service.openshift.impl;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.kontinuity.catapult.core.api.test.EnvironmentVariableController.setEnv;
-import static org.kontinuity.catapult.service.openshift.api.OpenShiftApiUrl.get;
-
+import static org.kontinuity.catapult.base.test.EnvironmentVariableController.setEnv;
+import static org.kontinuity.catapult.service.openshift.api.OpenShiftUrl.get;
 
 /**
  * Tests that we get the OpenShift API URL in the correct precedence (lower number gets priority):
@@ -16,7 +15,7 @@ import static org.kontinuity.catapult.service.openshift.api.OpenShiftApiUrl.get;
  *
  * @author <a href="mailto:alr@redhat.com">Andrew Lee Rubinger</a>
  */
-public class OpenShiftApiUrlTest {
+public class OpenShiftUrlTest {
 
     private static final String ENV_VAR_SYSPROP_NAME_OPENSHIFT_URL = "KONTINUITY_CATAPULT_OPENSHIFT_URL";
     private static final String TEST_OPENSHIFT_URL = "https://katapult-it-test:8443";
@@ -28,7 +27,6 @@ public class OpenShiftApiUrlTest {
         try {
             setEnv(ENV_VAR_SYSPROP_NAME_OPENSHIFT_URL, TEST_OPENSHIFT_URL);
             Assert.assertEquals(TEST_OPENSHIFT_URL, get());
-
         } finally {
             setEnv(ENV_VAR_SYSPROP_NAME_OPENSHIFT_URL, oldOpenShiftUrlEnv);
         }
@@ -42,7 +40,6 @@ public class OpenShiftApiUrlTest {
             setEnv(ENV_VAR_SYSPROP_NAME_OPENSHIFT_URL, "");
             System.setProperty(ENV_VAR_SYSPROP_NAME_OPENSHIFT_URL, TEST_OPENSHIFT_URL);
             Assert.assertEquals(TEST_OPENSHIFT_URL, get());
-
         } finally {
             if (oldOpenShiftProperty != null) {
                 System.setProperty(ENV_VAR_SYSPROP_NAME_OPENSHIFT_URL, oldOpenShiftProperty);
@@ -59,7 +56,6 @@ public class OpenShiftApiUrlTest {
             setEnv(ENV_VAR_SYSPROP_NAME_OPENSHIFT_URL, "shouldBeOverriddenBySysPropValue");
             System.setProperty(ENV_VAR_SYSPROP_NAME_OPENSHIFT_URL, TEST_OPENSHIFT_URL);
             Assert.assertEquals(TEST_OPENSHIFT_URL, get());
-
         } finally {
             if (oldOpenShiftProperty != null) {
                 System.setProperty(ENV_VAR_SYSPROP_NAME_OPENSHIFT_URL, oldOpenShiftProperty);
@@ -76,7 +72,6 @@ public class OpenShiftApiUrlTest {
             setEnv(ENV_VAR_SYSPROP_NAME_OPENSHIFT_URL, "");
             System.setProperty(ENV_VAR_SYSPROP_NAME_OPENSHIFT_URL, "");
             Assert.assertEquals(DEFAULT_OPENSHIFT_URL, get());
-
         } finally {
             if (oldOpenShiftProperty != null && !oldOpenShiftProperty.isEmpty()) {
                 System.setProperty(ENV_VAR_SYSPROP_NAME_OPENSHIFT_URL, oldOpenShiftProperty);
@@ -84,6 +79,4 @@ public class OpenShiftApiUrlTest {
             setEnv(ENV_VAR_SYSPROP_NAME_OPENSHIFT_URL, oldOpenShiftUrlEnv);
         }
     }
-
-
 }

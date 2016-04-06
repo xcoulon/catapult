@@ -1,4 +1,4 @@
-package org.kontinuity.catapult.core.api.test;
+package org.kontinuity.catapult.base.test;
 
 import java.io.InputStream;
 import java.net.URL;

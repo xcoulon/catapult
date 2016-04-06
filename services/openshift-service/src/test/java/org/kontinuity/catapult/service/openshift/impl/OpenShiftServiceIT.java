@@ -28,7 +28,7 @@ public class OpenShiftServiceIT {
 
     @BeforeClass
     public static void createService() {
-        service = OpenShiftServiceFactory.INSTANCE.create(OpenShiftApiUrl.INSTANCE.get());
+        service = OpenShiftServiceFactory.INSTANCE.create(OpenShiftUrl.get());
     }
 
     @AfterClass

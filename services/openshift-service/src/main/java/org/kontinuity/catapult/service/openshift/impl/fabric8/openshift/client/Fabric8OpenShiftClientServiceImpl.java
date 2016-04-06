@@ -6,11 +6,11 @@ import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.openshift.api.model.ProjectRequest;
 import io.fabric8.openshift.client.DefaultOpenShiftClient;
 import io.fabric8.openshift.client.OpenShiftClient;
+import org.kontinuity.catapult.service.openshift.api.DuplicateProjectException;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftProject;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftService;
-import org.kontinuity.catapult.service.openshift.spi.OpenShiftServiceSpi;
-import org.kontinuity.catapult.service.openshift.api.DuplicateProjectException;
 import org.kontinuity.catapult.service.openshift.impl.OpenShiftProjectImpl;
+import org.kontinuity.catapult.service.openshift.spi.OpenShiftServiceSpi;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -91,8 +91,18 @@ final class Fabric8OpenShiftClientServiceImpl implements OpenShiftService, OpenS
         if (project == null) {
             throw new IllegalArgumentException("project must be specified");
         }
-
         final String projectName = project.getName();
+        return this.deleteProject(projectName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean deleteProject(final String projectName) throws IllegalArgumentException {
+        if (projectName == null || projectName.isEmpty()) {
+            throw new IllegalArgumentException("project name must be specified");
+        }
 
         final boolean deleted = client.projects().withName(projectName).delete();
         if (deleted) {

@@ -7,13 +7,16 @@ import static org.kontinuity.catapult.service.openshift.api.OpenShiftEnvVarSysPr
  * <p>
  * 1) System Property {@link org.kontinuity.catapult.service.openshift.api.OpenShiftEnvVarSysPropNames#OPENSHIFT_URL}
  * 2) Environment Variable {@link org.kontinuity.catapult.service.openshift.api.OpenShiftEnvVarSysPropNames#OPENSHIFT_URL}
- * 3) {@link OpenShiftApiUrl#DEFAULT_OPENSHIFT_URL}
+ * 3) {@link OpenShiftUrl#DEFAULT_OPENSHIFT_URL}
  *
  * @author <a href="mailto:alr@redhat.com">Andrew Lee Rubinger</a>
  */
-public enum OpenShiftApiUrl {
+public class OpenShiftUrl {
 
-    INSTANCE;
+    /**
+     * No instances
+     */
+    private OpenShiftUrl(){}
 
     private static final String DEFAULT_OPENSHIFT_URL = "https://localhost:8443";
 

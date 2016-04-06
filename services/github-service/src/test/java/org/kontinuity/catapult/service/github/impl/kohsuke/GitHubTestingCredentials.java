@@ -28,7 +28,7 @@ public class GitHubTestingCredentials {
      * Obtains the GitHub token
      * @return
      */
-    public static String getPasswordOrToken(){
+    public static String getToken(){
         return GitHubTestingCredentials.getEnvVarOrSysProp(NAME_ENV_VAR_SYSPROP_GITHUB_TOKEN);
     }
 

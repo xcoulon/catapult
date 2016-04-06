@@ -18,7 +18,7 @@
       </dependency>
       <dependency>
          <groupId>org.kontinuity.catapult</groupId>
-         <artifactId>catapult-core-api</artifactId>
+         <artifactId>catapult-base</artifactId>
          <type>test-jar</type>
          <scope>test</scope>
       </dependency>

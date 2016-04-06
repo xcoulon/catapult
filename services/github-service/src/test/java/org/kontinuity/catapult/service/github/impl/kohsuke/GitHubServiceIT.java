@@ -35,7 +35,7 @@ public class GitHubServiceIT {
     @BeforeClass
     public static void initGithubCredentials() throws IOException {
         GITHUB_USERNAME = GitHubTestingCredentials.getUsername();
-        GITHUB_PERSONAL_ACCESS_TOKEN = GitHubTestingCredentials.getPasswordOrToken();
+        GITHUB_PERSONAL_ACCESS_TOKEN = GitHubTestingCredentials.getToken();
     }
 
     @Before

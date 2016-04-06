@@ -21,6 +21,12 @@
       </dependency>
       <dependency>
          <groupId>org.kontinuity.catapult</groupId>
+         <artifactId>catapult-service-github</artifactId>
+         <type>test-jar</type>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.kontinuity.catapult</groupId>
          <artifactId>catapult-service-openshift</artifactId>
          <type>ejb</type>
       </dependency>

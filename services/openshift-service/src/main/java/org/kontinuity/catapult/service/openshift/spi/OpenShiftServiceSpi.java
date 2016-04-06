@@ -20,4 +20,13 @@ public interface OpenShiftServiceSpi extends OpenShiftService {
      */
     boolean deleteProject(OpenShiftProject project) throws IllegalArgumentException;
 
+    /**
+     * Deletes the specified, required project
+     *
+     * @param projectName
+     * @return If the operation resulted in a deletion
+     * @throws IllegalArgumentException If the project is not specified
+     */
+    boolean deleteProject(String projectName) throws IllegalArgumentException;
+
 }
