@@ -19,9 +19,9 @@ import java.util.logging.Logger;
  *
  * @author <a href="mailto:alr@redhat.com">Andrew Lee Rubinger</a>
  */
-public class GitHubServiceTest {
+public class GitHubServiceIT {
 
-    private static final Logger log = Logger.getLogger(GitHubServiceTest.class.getName());
+    private static final Logger log = Logger.getLogger(GitHubServiceIT.class.getName());
     private static final String ENVVAR_NAME_GITHUB_USERNAME = "GITHUB_USERNAME";
     private static final String ENVVAR_NAME_GITHUB_TOKEN = "GITHUB_TOKEN";
     private static final String NAME_GITHUB_SOURCE_REPO = "jboss-developer/jboss-eap-quickstarts";

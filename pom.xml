@@ -118,10 +118,6 @@
     </build>
     <profiles>
         <profile>
-            <!-- The default profile skips all tests, though you can tune it
-                to run just unit tests based on a custom pattern -->
-            <!-- Separate profiles are provided for running all tests, including
-                Arquillian tests that execute in the specified container -->
             <id>default</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -131,11 +127,29 @@
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <includes>
-                                <include>**/*Test.java</include>
-                            </includes>
                             <redirectTestOutputToFile>true</redirectTestOutputToFile>
                         </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>it</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <configuration>
+                                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                                </configuration>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>

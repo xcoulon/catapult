@@ -14,9 +14,9 @@ import java.util.logging.Logger;
 /**
  * @author <a href="mailto:alr@redhat.com">Andrew Lee Rubinger</a>
  */
-public class OpenShiftClientTest {
+public class OpenShiftServiceIT {
 
-    private static final Logger log = Logger.getLogger(OpenShiftClientTest.class.getName());
+    private static final Logger log = Logger.getLogger(OpenShiftServiceIT.class.getName());
 
     private static final String URL_OPENSHIFT = "https://localhost:8443";
     private static final String PREFIX_NAME_PROJECT = "test-project-";
