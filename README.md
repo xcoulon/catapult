@@ -60,12 +60,18 @@ Build and Run the Unit Tests
 Run the Integration Tests, Optionally Building
 ----------------------------------------------
 
-* To build the project and run the integration tests:
+* To build the project and run the integration tests, allowing Maven to start the WildFly server:
  
         $ mvn clean install -Pit
 
 
-* To skip building and just run the integration tests:
+* To skip building and just run the integration tests, allowing Maven to start the WildFly server:
 
         $ mvn integration-test -Pit
+        
+* By default the above will install and control the lifecycle for the WildFly server when running full system tests in the "tests" module.  If you would prefer to not have the Maven lifecycle install a WildFly server for you, you may instead:
+    * Download and install WildFly 10.0.0.Final from http://wildfly.org/downloads/
+    * Start up the WildFly server by going to `$INSTALL_DIR/bin` and executing `standalone.sh` (*nix) or `standalone.bat` (Windows)
+    * Run the integration tests and have Maven skip start/stop of the WildFly server by using the `server-remote` profile.  This may speed up your development cycle if you're doing many runs by starting your server on your own and letting it run through several test runs.
+        * `$ mvn integration-test -Pit,server-remote` or `$ mvn clean install -Pit,server-remote`
         
