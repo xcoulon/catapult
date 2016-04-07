@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
  * Validation of the GithubResource api endpoint
  */
 @RunWith(Arquillian.class)
-public class GithubResourceTest {
+public class GithubResourceIT {
 
     /**
      * Deploy the katapult.ear as built since we only test via the rest endpoints
