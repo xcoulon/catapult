@@ -61,22 +61,33 @@ public class GithubResource
 
    /**
     * Initialize the GITHUB_DEV_APP_CLIENT_ID and GITHUB_DEV_APP_SECRET values from the environment by first looking
-    * to the system property by the same name, will fallback to the environment variable by the same name.
+    * to the system property by the same name, will fallback to the environment variable by the same name.  If not
+    * specified, fail to start this component with {@link IllegalStateException}.
     */
    @PostConstruct
    private void init() {
       // Try the system property first since this can be specified in the server configuration
       GITHUB_DEV_APP_CLIENT_ID = System.getProperty("GITHUB_DEV_APP_CLIENT_ID");
-      if(GITHUB_DEV_APP_CLIENT_ID == null)
+      if (GITHUB_DEV_APP_CLIENT_ID == null) {
          GITHUB_DEV_APP_CLIENT_ID = System.getenv("GITHUB_DEV_APP_CLIENT_ID");
-      if(GITHUB_DEV_APP_CLIENT_ID == null)
-         log.severe("Failed to find binding for GITHUB_DEV_APP_CLIENT_ID");
+      }
+      if (GITHUB_DEV_APP_CLIENT_ID == null) {
+         final String errorMessage =
+                 "Failed to find binding for GITHUB_DEV_APP_CLIENT_ID as env var or sysprop; cannot init";
+         log.severe(errorMessage);
+         throw new IllegalStateException(errorMessage);
+      }
 
       GITHUB_DEV_APP_SECRET = System.getProperty("GITHUB_DEV_APP_SECRET");
-      if(GITHUB_DEV_APP_SECRET == null)
+      if (GITHUB_DEV_APP_SECRET == null) {
          GITHUB_DEV_APP_SECRET = System.getenv("GITHUB_DEV_APP_SECRET");
-      if(GITHUB_DEV_APP_SECRET == null)
-         log.severe("Failed to find binding for GITHUB_DEV_APP_SECRET");
+      }
+      if (GITHUB_DEV_APP_SECRET == null) {
+         final String errorMessage =
+                 "Failed to find binding for GITHUB_DEV_APP_SECRET as env var or sysprop; cannot init";
+         log.severe(errorMessage);
+         throw new IllegalStateException(errorMessage);
+      }
    }
 
    /**
