@@ -128,7 +128,7 @@ public class GithubResourceIT {
                 }
                 // Yes, prompt for the otp
                 String code = JOptionPane.showInputDialog(
-                        null, "Enter your two-factor one time password/code: ",
+                        null, "Enter your GitHub two-factor one time password/code: ",
                         "two-factor code",
                         JOptionPane.PLAIN_MESSAGE);
                 otp.type(code);
