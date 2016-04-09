@@ -58,6 +58,8 @@ public class GithubResource
    private static String GITHUB_DEV_APP_CLIENT_ID;
    /** The client secret received from GitHub when the developer app was registered */
    private static String GITHUB_DEV_APP_SECRET;
+   /** Our User-Agent HTTP header value (name of our app) */
+   private static String HEADER_VALUE_USER_AGENT = "Kontinuity Catapult";
 
    /**
     * Initialize the GITHUB_DEV_APP_CLIENT_ID and GITHUB_DEV_APP_SECRET values from the environment by first looking
@@ -241,7 +243,7 @@ public class GithubResource
               .request()
               .accept(MediaType.APPLICATION_JSON_TYPE)
               .header("Authorization", "token " + accessToken)
-              .header("User-Agent", "Github Forker")
+              .header("User-Agent", HEADER_VALUE_USER_AGENT)
               .post(Entity.text(""));
       Response.StatusType status = response.getStatusInfo();
       if (status == Response.Status.ACCEPTED)
@@ -271,7 +273,7 @@ public class GithubResource
               .request()
               .accept(MediaType.APPLICATION_JSON_TYPE)
               .header("Authorization", "token " + accessToken)
-              .header("User-Agent", "Forge Online App")
+              .header("User-Agent", HEADER_VALUE_USER_AGENT)
               .post(Entity.json(json.build()));
       int status = response.getStatus();
       if (status != 201)
