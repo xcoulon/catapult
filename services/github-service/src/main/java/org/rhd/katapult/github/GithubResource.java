@@ -136,7 +136,7 @@ public class GithubResource
       log.info("OAuth2 response: "+response.getStatusInfo());
       if(log.isLoggable(Level.FINEST)) {
          log.finest("OAuth2 response headers:");
-         response.getHeaders().forEach((key, values) -> log.info(key + ": " + values));
+         response.getHeaders().forEach((key, values) -> log.finest(key + ": " + values));
       }
       return response;
    }
