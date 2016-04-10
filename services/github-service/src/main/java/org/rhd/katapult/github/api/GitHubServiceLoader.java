@@ -12,23 +12,16 @@ public interface GitHubServiceLoader {
 
     /**
      * Creates and returns a new instance of {@link GitHubService} initialized with
-     * authentication information from the required username and required password/token
+     * authentication information from the required password/personal access token
+     * and optional username.
      *
+     * Note that for a token, the username is not required.  For password, the username is.
+     *
+     * @param githubToken
      * @param githubUsername
-     * @param githubToken
      * @return
-     * @throws IllegalArgumentException If either the username and/or password/token is not specified
+     * @throws IllegalArgumentException If the password/token is not specified
      */
-    GitHubService create(String githubUsername, String githubToken) throws IllegalArgumentException;
-
-    /**
-     * Creates and returns a new instance of {@link GitHubService} initialized with
-     * authentication information from the required OAuth/ token
-     *
-     * @param githubToken
-     * @return
-     * @throws IllegalArgumentException If either the token is not specified
-     */
-    GitHubService create(String githubToken) throws IllegalArgumentException;
+    GitHubService create(String githubToken, String githubUsername) throws IllegalArgumentException;
 
 }

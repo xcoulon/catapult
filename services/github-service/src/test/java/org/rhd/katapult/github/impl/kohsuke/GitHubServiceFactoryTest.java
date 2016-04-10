@@ -13,23 +13,23 @@ import org.rhd.katapult.github.api.GitHubServiceFactory;
 public class GitHubServiceFactoryTest {
 
     @Test(expected = IllegalArgumentException.class)
-    public void usernameCannotBeEmpty() {
+    public void tokenCannotBeEmptyWhenUsingUsername() {
         GitHubServiceFactory.INSTANCE.create("", "test");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void usernameCannotBeNull() {
+    public void tokenCannotBeEmptyWhenNotUsingUsername() {
+        GitHubServiceFactory.INSTANCE.create("");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void tokenCannotBeNullWhenUsingUsername() {
         GitHubServiceFactory.INSTANCE.create(null, "test");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void tokenCannotBeEmpty() {
-        GitHubServiceFactory.INSTANCE.create("test", "");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void tokenCannotBeNull() {
-        GitHubServiceFactory.INSTANCE.create("test", null);
+    public void tokenCannotBeNullWhenNotUsingUsername() {
+        GitHubServiceFactory.INSTANCE.create(null);
     }
 
     @Test
@@ -37,6 +37,4 @@ public class GitHubServiceFactoryTest {
         final GitHubService service = GitHubServiceFactory.INSTANCE.create("test", "test");
         Assert.assertNotNull("instance was not created", service);
     }
-
-
 }

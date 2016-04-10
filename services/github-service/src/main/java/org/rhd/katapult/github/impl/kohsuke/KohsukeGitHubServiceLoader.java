@@ -30,7 +30,7 @@ public final class KohsukeGitHubServiceLoader implements GitHubServiceLoader {
      * {@inheritDoc}
      */
     @Override
-    public GitHubService create(final String githubUsername, final String githubToken) throws
+    public GitHubService create(final String githubToken, final String githubUsername) throws
             IllegalArgumentException {
         final GitHub gitHub;
         try {
@@ -53,13 +53,5 @@ public final class KohsukeGitHubServiceLoader implements GitHubServiceLoader {
             log.log(Level.FINEST, "Created backing GitHub client for user " + githubUsername);
         }
         return ghs;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public GitHubService create(String githubToken) throws IllegalArgumentException {
-        return create(null, githubToken);
     }
 }

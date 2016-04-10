@@ -27,32 +27,16 @@ public enum GitHubServiceFactory {
 
 
     /**
-     * Creates a new {@link GitHubService} with the specified, required username and password/token
+     * Creates a new {@link GitHubService} with the specified,
+     * required username and password/personal access token
      *
-     * @param githubUsername
      * @param githubToken
+     * @param githubUsername
      * @return
      * @throws IllegalArgumentException If either the username and/or password/token is not specified
      */
-    public GitHubService create(final String githubUsername, final String githubToken) throws IllegalArgumentException {
-        // Precondition checks
-        if (githubUsername == null || githubUsername.isEmpty()) {
-            throw new IllegalArgumentException("username is required");
-        }
-        return internalCreate(githubUsername, githubToken);
-    }
-    public GitHubService create(final String githubToken) throws IllegalArgumentException {
-        return internalCreate(null, githubToken);
-    }
+    public GitHubService create(final String githubToken, final String githubUsername) throws IllegalArgumentException {
 
-    /**
-     *
-     * @param githubUsername - may be null if githubToken is not null and and not a password
-     * @param githubToken - the user password or authorization token
-     * @return
-     * @throws IllegalArgumentException If either the password/token is not specified
-     */
-    private GitHubService internalCreate(final String githubUsername, final String githubToken) {
         // Precondition checks
         if (githubToken == null || githubToken.isEmpty()) {
             throw new IllegalArgumentException("password/token is required");
@@ -71,9 +55,19 @@ public enum GitHubServiceFactory {
         }
 
         // Create
-        final GitHubService gsh = ghsl.create(githubUsername, githubToken);
+        final GitHubService gsh = ghsl.create(githubToken, githubUsername);
         return gsh;
     }
 
-
+    /**
+     * Creates a new {@link GitHubService} with the specified,
+     * required OAuth token
+     *
+     * @param githubToken
+     * @return
+     * @throws IllegalArgumentException If the OAuth token is not specified
+     */
+    public GitHubService create(final String githubToken) throws IllegalArgumentException {
+        return this.create(githubToken, null);
+    }
 }

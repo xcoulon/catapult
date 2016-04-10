@@ -41,7 +41,7 @@ public class GitHubServiceIT {
 
     @Before
     public void initGithubService() {
-        gitHubService = GitHubServiceFactory.INSTANCE.create(GITHUB_USERNAME, GITHUB_PERSONAL_ACCESS_TOKEN);
+        gitHubService = GitHubServiceFactory.INSTANCE.create(GITHUB_PERSONAL_ACCESS_TOKEN, GITHUB_USERNAME);
     }
 
     @Test(expected = IllegalArgumentException.class)
