@@ -50,7 +50,30 @@ Prerequisites to Run Integration Tests
     to contain the id and secret for the github developer application you want to use. You can also specify system properties
     of the same name to override any environment variable setting.
     
-2. A locally-running instance of OpenShift 
+2.  A GitHub OAuth Application
+ 
+    Catapult forks repositories on behalf of users; in order to do this, we must ask the user permission and this is done via the GitHub OAuth Web Flow.  In production Catapult will have an OAuth application registered with GitHub to register the appropriate callbacks, but for security reasons we cannot give out the credentials publicly for testing.  Each developer must set up their own OAuth application.
+    
+    * Log into the GitHub Settings for your user account and create a new OAuth application
+        * https://github.com/settings/applications/new
+            * Application Name
+                * e.g. `Catapult by Red Hat Kontinuity (Local Development for [@GitHubUsername])`
+            * Homepage URL
+                * e.g. `http://developers.redhat.com`
+            * Application Description
+                * Not required
+            * Authorization callback URL
+                * `http://localhost:8080/kontinuity-catapult/api/github/callback`
+                * You may need to replace `localhost` with your local machine's loopback binding depending upon your configuration, but this should work for the majority of cases
+        * Hit "Register application"
+            
+    * You will be shown your new application's `Client ID` and `Client Secret`
+        * Set environment variables for these
+            * `KONTINUITY_CATAPULT_GITHUB_APP_CLIENT_ID`
+            * `KONTINUITY_CATAPULT_GITHUB_APP_CLIENT_SECRET`
+        * You may need to log in again or `source` your `~/.bash_profile` or `~/.profile`, depending upon how you've set the environment variables (system-specific).
+   
+3. A locally-running instance of OpenShift 
 
     ALR has been running his tests against a local instance of Origin; instructions for getting this stood up are here:
         https://github.com/openshift/origin/blob/master/CONTRIBUTING.adoc

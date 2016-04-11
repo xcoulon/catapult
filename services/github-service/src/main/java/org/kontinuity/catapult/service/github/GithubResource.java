@@ -65,6 +65,10 @@ public class GithubResource
    private static String GITHUB_DEV_APP_SECRET;
    /** Our User-Agent HTTP header value (name of our app) */
    private static String HEADER_VALUE_USER_AGENT = "Kontinuity Catapult";
+   /** Name of the environment variable or system property for the GitHub OAuth Client ID */
+   private static String ENV_VAR_SYS_PROP_NAME_GITHUB_CLIENT_ID = "KONTINUITY_CATAPULT_GITHUB_APP_CLIENT_ID";
+   /** Name of the environment variable or system property for the GitHub OAuth Client Secret */
+   private static String ENV_VAR_SYS_PROP_NAME_GITHUB_CLIENT_SECRET = "KONTINUITY_CATAPULT_GITHUB_APP_CLIENT_SECRET";
 
    /**
     * Initialize the GITHUB_DEV_APP_CLIENT_ID and GITHUB_DEV_APP_SECRET values from the environment by first looking
@@ -74,24 +78,28 @@ public class GithubResource
    @PostConstruct
    private void init() {
       // Try the system property first since this can be specified in the server configuration
-      GITHUB_DEV_APP_CLIENT_ID = System.getProperty("GITHUB_DEV_APP_CLIENT_ID");
+      GITHUB_DEV_APP_CLIENT_ID = System.getProperty(ENV_VAR_SYS_PROP_NAME_GITHUB_CLIENT_ID);
       if (GITHUB_DEV_APP_CLIENT_ID == null) {
-         GITHUB_DEV_APP_CLIENT_ID = System.getenv("GITHUB_DEV_APP_CLIENT_ID");
+         GITHUB_DEV_APP_CLIENT_ID = System.getenv(ENV_VAR_SYS_PROP_NAME_GITHUB_CLIENT_ID);
       }
       if (GITHUB_DEV_APP_CLIENT_ID == null) {
          final String errorMessage =
-                 "Failed to find binding for GITHUB_DEV_APP_CLIENT_ID as env var or sysprop; cannot init";
+                 "Failed to find binding for " +
+                         ENV_VAR_SYS_PROP_NAME_GITHUB_CLIENT_ID +
+                         " as env var or sysprop; cannot init";
          log.severe(errorMessage);
          throw new IllegalStateException(errorMessage);
       }
 
-      GITHUB_DEV_APP_SECRET = System.getProperty("GITHUB_DEV_APP_SECRET");
+      GITHUB_DEV_APP_SECRET = System.getProperty(ENV_VAR_SYS_PROP_NAME_GITHUB_CLIENT_SECRET);
       if (GITHUB_DEV_APP_SECRET == null) {
-         GITHUB_DEV_APP_SECRET = System.getenv("GITHUB_DEV_APP_SECRET");
+         GITHUB_DEV_APP_SECRET = System.getenv(ENV_VAR_SYS_PROP_NAME_GITHUB_CLIENT_SECRET);
       }
       if (GITHUB_DEV_APP_SECRET == null) {
          final String errorMessage =
-                 "Failed to find binding for GITHUB_DEV_APP_SECRET as env var or sysprop; cannot init";
+                 "Failed to find binding for " +
+                         ENV_VAR_SYS_PROP_NAME_GITHUB_CLIENT_SECRET +
+                         " as env var or sysprop; cannot init";
          log.severe(errorMessage);
          throw new IllegalStateException(errorMessage);
       }
