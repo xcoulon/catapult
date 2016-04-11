@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * Validation of the GithubResource api endpoint
- * This requires the following environment variables to be configure:
+ * This requires the following environment variables to be configured:
  * GITHUB_USERNAME
  * GITHUB_PASSWORD
  */
@@ -30,14 +30,14 @@ import java.util.List;
 public class GithubResourceIT {
 
     /**
-     * Deploy the katapult.ear as built since we only test via the rest endpoints
+     * Deploy the catapult.ear as built since we only test via the rest endpoints
      * @return
      */
     @Deployment(testable = false)
     public static EnterpriseArchive createDeployment() {
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "application-ear.ear")
                 .as(ZipImporter.class)
-                .importFrom(new File("../ear/target/katapult.ear"))
+                .importFrom(new File("../ear/target/catapult.ear"))
                 .as(EnterpriseArchive.class);
         return ear;
     }
