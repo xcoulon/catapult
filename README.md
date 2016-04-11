@@ -76,7 +76,10 @@ Prerequisites to Run Integration Tests
 3. A locally-running instance of OpenShift 
 
     ALR has been running his tests against a local instance of Origin; instructions for getting this stood up are here:
-        https://github.com/openshift/origin/blob/master/CONTRIBUTING.adoc
+    
+    * https://github.com/openshift/origin/blob/master/CONTRIBUTING.adoc
+    
+    You may take a binary built by the OpenShift team, build an instance locally, obtain through the CDK, or use Vagrant; any way that boots OpenShift locally should be fine. 
 
     When running, this should give you a local API to execute against at https://localhost:8443, which is where the OpenShiftService tests currently look to make their calls.
 
