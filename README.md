@@ -31,8 +31,14 @@ Prerequisites to Run Integration Tests
 
     * Log into GitHub and generate an access token for use here:
     --  https://help.github.com/articles/creating-an-access-token-for-command-line-use/
+        * Set scopes
+            * `repo`
+            * `admin:repo_hook`
+            * `delete_repo`
     * Create 3 environment variables:
-    -- `GITHUB_USERNAME`, `GITHUB_TOKEN`, `GITHUB_PASSWORD`
+        * `GITHUB_USERNAME`
+        * `GITHUB_TOKEN`
+        * `GITHUB_PASSWORD`
 
     For instance you may put into your `~/.bash_profile`:
 
@@ -44,11 +50,6 @@ Prerequisites to Run Integration Tests
 
         $ echo $GITHUB_USERNAME
 
-    Associate the developer application client id/secret with webapp. This should be a developer app that has a callback url
-    configured to work with the testing environment, e.g., http://localhost:8080/katapult/api/github/callback.
-    Configure the `GITHUB_DEV_APP_CLIENT_ID` and `GITHUB_DEV_APP_SECRET` environment variables
-    to contain the id and secret for the github developer application you want to use. You can also specify system properties
-    of the same name to override any environment variable setting.
     
 2.  A GitHub OAuth Application
  
