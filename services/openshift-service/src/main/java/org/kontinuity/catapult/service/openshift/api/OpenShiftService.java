@@ -17,5 +17,14 @@ public interface OpenShiftService {
      */
     OpenShiftProject createProject(String name) throws DuplicateProjectException,
             IllegalArgumentException;
+	
+	/**
+	 * Return the Github WebHook from an application.
+	 *
+	 * @param namespace
+	 * @param applicationName
+	 * @return
+	 */
+	String getGithubWebhook(String namespace, String applicationName);
 
 }

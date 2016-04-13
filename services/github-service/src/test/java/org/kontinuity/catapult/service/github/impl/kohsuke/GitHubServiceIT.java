@@ -1,15 +1,14 @@
 package org.kontinuity.catapult.service.github.impl.kohsuke;
 
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kontinuity.catapult.service.github.api.GitHubRepository;
-import org.kontinuity.catapult.service.github.api.GitHubService;
-import org.kontinuity.catapult.service.github.api.GitHubServiceFactory;
-import org.kontinuity.catapult.service.github.api.NoSuchRepositoryException;
+import org.kontinuity.catapult.service.github.api.*;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -64,6 +63,20 @@ public class GitHubServiceIT {
     @Test(expected = NoSuchRepositoryException.class)
     public void cannotForkNonexistentRepo(){
         gitHubService.fork("ALRubinger/someRepoThatDoesNotAndWillNeverExist");
+    }
+   
+    @Test
+    public void createGithubWebHook() throws Exception{
+    	final URL webhookUrl = new URL("https://10.1.2.2");
+    	
+    	final GitHubRepository targetRepo = gitHubService.fork(NAME_GITHUB_SOURCE_REPO);
+		GitHubWebhook webhook = gitHubService.createWebhook(
+    			targetRepo,
+    			webhookUrl,
+    			GitHubWebhookEvent.ALL);
+    	
+    	Assert.assertNotNull(webhook);
+    	Assert.assertEquals(webhookUrl.toString(), webhook.getUrl());
     }
 
 }

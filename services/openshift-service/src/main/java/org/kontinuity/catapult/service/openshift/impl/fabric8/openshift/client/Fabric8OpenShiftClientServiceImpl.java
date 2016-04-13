@@ -3,6 +3,7 @@ package org.kontinuity.catapult.service.openshift.impl.fabric8.openshift.client;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.kubernetes.client.KubernetesClientException;
+import io.fabric8.openshift.api.model.BuildConfigList;
 import io.fabric8.openshift.api.model.ProjectRequest;
 import io.fabric8.openshift.client.DefaultOpenShiftClient;
 import io.fabric8.openshift.client.OpenShiftClient;
@@ -82,6 +83,36 @@ final class Fabric8OpenShiftClientServiceImpl implements OpenShiftService, OpenS
         final OpenShiftProject project = new OpenShiftProjectImpl(roundtripDisplayName);
         return project;
     }
+    
+    @Override
+	public String getGithubWebhook(String namespace, String applicationName) {
+		BuildConfigList builds = client
+				.buildConfigs()
+				.inNamespace(namespace)
+				.withLabel("application", applicationName)
+				.list();
+		
+		String secret = builds
+				.getItems()
+				.get(0)
+				.getSpec()
+				.getTriggers()
+				.get(0)
+				.getGithub()
+				.getSecret();
+
+		StringBuilder webhook = new StringBuilder();
+		webhook.append(client.getOpenshiftUrl());
+		webhook.append("namespaces/");
+		webhook.append(namespace);
+		webhook.append("/buildconfigs/");
+		webhook.append(applicationName);
+		webhook.append("/webhooks/");
+		webhook.append(secret);
+		webhook.append("/github");
+
+		return webhook.toString();
+	}
 
     /**
      * {@inheritDoc}
