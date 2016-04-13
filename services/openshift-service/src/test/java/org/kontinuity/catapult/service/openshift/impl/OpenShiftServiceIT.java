@@ -8,18 +8,19 @@ import org.junit.Test;
 import org.kontinuity.catapult.service.openshift.api.*;
 import org.kontinuity.catapult.service.openshift.spi.OpenShiftServiceSpi;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * @author <a href="mailto:alr@redhat.com">Andrew Lee Rubinger</a>
+ * @author <a href="mailto:rmartine@redhat.com">Ricardo Martinelli de Oliveira</a>
  */
 public class OpenShiftServiceIT {
 
     private static final Logger log = Logger.getLogger(OpenShiftServiceIT.class.getName());
 
-;
     private static final String PREFIX_NAME_PROJECT = "test-project-";
 
     private static final Collection<OpenShiftProject> createdProjects = new ArrayList<>();
@@ -42,22 +43,31 @@ public class OpenShiftServiceIT {
 
     @Test
     public void createProject() {
-        final String projectName = PREFIX_NAME_PROJECT + System.currentTimeMillis();
+        final String projectName = getUniqueProjectName();
         final OpenShiftProject project = service.createProject(projectName);
         final String name = project.getName();
-        log.log(Level.INFO, "Created project: \'" + name + "\'");
         createdProjects.add(project);
         Assert.assertEquals("returned project did not have expected name", projectName, name);
     }
 
     @Test(expected = DuplicateProjectException.class)
     public void duplicateProjectNameShouldFail() {
-        final String projectName = PREFIX_NAME_PROJECT + System.currentTimeMillis();
-        final OpenShiftProject project = service.createProject(projectName);
-        createdProjects.add(project);
+        final OpenShiftProject project = triggerCreateProject(getUniqueProjectName());
         final String name = project.getName();
         service.createProject(name); // Using same name should fail with DPE here
         // Just in case the above doesn't fail
         createdProjects.add(project);
     }
+
+    private String getUniqueProjectName(){
+        return PREFIX_NAME_PROJECT + System.currentTimeMillis();
+    }
+
+	private OpenShiftProject triggerCreateProject(final String projectName) {
+    	final OpenShiftProject project = service.createProject(projectName);
+    	log.log(Level.INFO, "Created project: \'" + projectName + "\'");
+    	createdProjects.add(project);
+    	
+    	return project;
+	}
 }

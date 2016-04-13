@@ -3,6 +3,7 @@ package org.kontinuity.catapult.service.openshift.impl.fabric8.openshift.client;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.kubernetes.client.KubernetesClientException;
+import io.fabric8.openshift.api.model.BuildConfigList;
 import io.fabric8.openshift.api.model.ProjectRequest;
 import io.fabric8.openshift.client.DefaultOpenShiftClient;
 import io.fabric8.openshift.client.OpenShiftClient;

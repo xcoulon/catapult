@@ -17,5 +17,4 @@ public interface OpenShiftService {
      */
     OpenShiftProject createProject(String name) throws DuplicateProjectException,
             IllegalArgumentException;
-
 }

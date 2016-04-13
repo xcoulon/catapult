@@ -1,15 +1,25 @@
 package org.kontinuity.catapult.service.github.impl.kohsuke;
 
-import org.kohsuke.github.GHRepository;
-import org.kohsuke.github.GitHub;
-import org.kontinuity.catapult.service.github.api.GitHubService;
-import org.kontinuity.catapult.service.github.api.NoSuchRepositoryException;
-import org.kontinuity.catapult.service.github.api.GitHubRepository;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.kohsuke.github.GHEvent;
+import org.kohsuke.github.GHHook;
+import org.kohsuke.github.GHRepository;
+import org.kohsuke.github.GitHub;
+import org.kontinuity.catapult.service.github.api.GitHubRepository;
+import org.kontinuity.catapult.service.github.api.GitHubService;
+import org.kontinuity.catapult.service.github.api.GitHubWebhook;
+import org.kontinuity.catapult.service.github.api.GitHubWebhookEvent;
+import org.kontinuity.catapult.service.github.api.NoSuchRepositoryException;
 
 /**
  * Implementation of {@link GitHubService} backed by the Kohsuke GitHub Java Client
@@ -19,7 +29,9 @@ import java.util.logging.Logger;
  */
 final class KohsukeGitHubServiceImpl implements GitHubService {
 
-    private static final Logger log = Logger.getLogger(KohsukeGitHubServiceImpl.class.getName());
+    private static final String GITHUB_WEBHOOK_WEB = "web";
+
+	private static final Logger log = Logger.getLogger(KohsukeGitHubServiceImpl.class.getName());
 
     private static final String MSG_NOT_FOUND = "Not Found";
 
@@ -132,6 +144,75 @@ final class KohsukeGitHubServiceImpl implements GitHubService {
                     + newlyCreatedRepo.getGitTransportUrl());
         }
         return wrapped;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public GitHubWebhook createWebhook(final GitHubRepository repository,
+                                       final URL webhookUrl,
+                                       final GitHubWebhookEvent... events)
+            throws IllegalArgumentException {
+        // Precondition checks
+        if (repository == null) {
+            throw new IllegalArgumentException("repository must be specified");
+        }
+        if (webhookUrl == null) {
+            throw new IllegalArgumentException("webhook URL must be specified");
+        }
+        if (events == null || events.length == 0) {
+            throw new IllegalArgumentException("at least one event must be specified");
+        }
+
+    	final GHRepository repo;
+        try {
+            repo = delegate.getRepository(repository.getFullName());
+        } catch (final IOException ioe) {
+            throw new RuntimeException(ioe);
+        }
+        Map<String, String> configuration = new HashMap<>();
+    	configuration.put("url", webhookUrl.toString());
+    	configuration.put("content_type", "json");
+
+        List<GHEvent> githubEvents = Stream.of(events).map(event -> GHEvent.valueOf(event.name())).collect(Collectors.toList());
+
+        final GHHook webhook;
+        try {
+            webhook = repo.createHook(
+                    GITHUB_WEBHOOK_WEB,
+                    configuration,
+                    githubEvents,
+                    true);
+        } catch (final IOException ioe) {
+            throw new RuntimeException(ioe);
+        }
+
+        final GitHubWebhook githubWebhook = new KohsukeGitHubWebhook(webhook);
+    	return githubWebhook;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void deleteWebhooks(final GitHubRepository repository) throws IllegalArgumentException {
+    	if(repository == null) {
+    		throw new IllegalArgumentException("repository must be specified");
+    	}
+    	final GHRepository repo;
+    	try {
+    		repo = delegate.getRepository(repository.getFullName());
+    		
+    		for (GHHook hook: repo.getHooks()) {
+        		hook.delete();
+        	}
+        } catch (final IOException ioe) {
+            // Check for repo not found (this is how Kohsuke Java Client reports the error)
+            if (isRepoNotFound(ioe)) {
+                throw new NoSuchRepositoryException("Could not remove webhooks from specified repository "
+                        + repository.getFullName() + " because it could not be found or there is no webhooks for that repository.");
+            }
+            throw new RuntimeException("Could not remove webhooks from " + repository.getFullName(), ioe);
+        }
     }
 
     /**
