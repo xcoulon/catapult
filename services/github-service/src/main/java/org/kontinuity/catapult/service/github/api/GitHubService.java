@@ -45,9 +45,13 @@ public interface GitHubService {
      *
      * @param repository - the value object that represents the GitHub repository
      * @param webhookUrl - the URL of the webhook
-     * @param events - the events that trigger the webhook
+     * @param events - the events that trigger the webhook; at least one is required
+     * @throws IllegalArgumentException If any of the parameters are unspecified
      * @return
      */
-    GitHubWebhook createWebhook(GitHubRepository repository, URL webhookUrl, GitHubWebhookEvent... events) throws IOException;
+    GitHubWebhook createWebhook(GitHubRepository repository,
+                                URL webhookUrl,
+                                GitHubWebhookEvent... events)
+            throws IllegalArgumentException;
     
 }

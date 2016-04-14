@@ -145,25 +145,49 @@ final class KohsukeGitHubServiceImpl implements GitHubService {
         }
         return wrapped;
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public GitHubWebhook createWebhook(GitHubRepository repository, URL webhookUrl, GitHubWebhookEvent... events) throws IOException {
-    	GHRepository repo = delegate.getRepository(repository.getFullName());
-    	Map<String, String> configuration = new HashMap<>();
+    public GitHubWebhook createWebhook(final GitHubRepository repository,
+                                       final URL webhookUrl,
+                                       final GitHubWebhookEvent... events)
+            throws IllegalArgumentException {
+        // Precondition checks
+        if (repository == null) {
+            throw new IllegalArgumentException("repository must be specified");
+        }
+        if (webhookUrl == null) {
+            throw new IllegalArgumentException("webhook URL must be specified");
+        }
+        if (events == null || events.length == 0) {
+            throw new IllegalArgumentException("at least one event must be specified");
+        }
+
+    	final GHRepository repo;
+        try {
+            repo = delegate.getRepository(repository.getFullName());
+        } catch (final IOException ioe) {
+            throw new RuntimeException(ioe);
+        }
+        Map<String, String> configuration = new HashMap<>();
     	configuration.put("url", webhookUrl.toString());
     	configuration.put("content_type", "json");
-    	
-    	List<GHEvent> githubEvents = Stream.of(events).map(event -> GHEvent.valueOf(event.name())).collect(Collectors.toList());
-    	
-    	GHHook webhook = repo.createHook(
-    			GITHUB_WEBHOOK_WEB,					// TODO consider other hook types?
-    			configuration,
-    			githubEvents,
-    			true);
-    	
-    	GitHubWebhook githubWebhook = new KohsukeGitHubWebhook(webhook);
+
+        List<GHEvent> githubEvents = Stream.of(events).map(event -> GHEvent.valueOf(event.name())).collect(Collectors.toList());
+
+        final GHHook webhook;
+        try {
+            webhook = repo.createHook(
+                    GITHUB_WEBHOOK_WEB,
+                    configuration,
+                    githubEvents,
+                    true);
+        } catch (final IOException ioe) {
+            throw new RuntimeException(ioe);
+        }
+
+        final GitHubWebhook githubWebhook = new KohsukeGitHubWebhook(webhook);
     	return githubWebhook;
     }
 
