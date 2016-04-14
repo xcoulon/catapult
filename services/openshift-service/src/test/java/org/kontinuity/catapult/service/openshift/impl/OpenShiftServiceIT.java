@@ -47,33 +47,27 @@ public class OpenShiftServiceIT {
 
     @Test
     public void createProject() {
-        final String projectName = PREFIX_NAME_PROJECT + System.currentTimeMillis();
+        final String projectName = getUniqueProjectName();
         final OpenShiftProject project = service.createProject(projectName);
         final String name = project.getName();
-        log.log(Level.INFO, "Created project: \'" + name + "\'");
         createdProjects.add(project);
         Assert.assertEquals("returned project did not have expected name", projectName, name);
     }
 
     @Test(expected = DuplicateProjectException.class)
     public void duplicateProjectNameShouldFail() {
-        OpenShiftProject project = triggerCreateProject();
+        final OpenShiftProject project = triggerCreateProject(getUniqueProjectName());
         final String name = project.getName();
         service.createProject(name); // Using same name should fail with DPE here
         // Just in case the above doesn't fail
         createdProjects.add(project);
     }
-    
-    @Test
-    public void shouldGetWebhook() {
-    	OpenShiftProject project = triggerCreateProject();
-    	String webhookUrl = service.getGithubWebhook(project.getName(), "test-app");
-    	
-    	Assert.assertTrue(!webhookUrl.isEmpty());
+
+    private String getUniqueProjectName(){
+        return PREFIX_NAME_PROJECT + System.currentTimeMillis();
     }
 
-	private OpenShiftProject triggerCreateProject() {
-		final String projectName = PREFIX_NAME_PROJECT + System.currentTimeMillis();
+	private OpenShiftProject triggerCreateProject(final String projectName) {
     	final OpenShiftProject project = service.createProject(projectName);
     	log.log(Level.INFO, "Created project: \'" + projectName + "\'");
     	createdProjects.add(project);
