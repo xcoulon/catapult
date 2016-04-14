@@ -8,10 +8,18 @@ import org.kontinuity.catapult.service.github.api.GitHubWebhookEvent;
 
 public class KohsukeGitHubWebhook implements GitHubWebhook {
 	
-	private GHHook delegate;
+	private final GHHook delegate;
+	private final GitHubWebhookEvent[] events;
 	
-	public KohsukeGitHubWebhook(GHHook delegate) {
+	public KohsukeGitHubWebhook(final GHHook delegate) {
+		assert delegate != null : "delegate is required";
 		this.delegate = delegate;
+		this.events = delegate
+				.getEvents()
+				.stream()
+				.map(evt -> GitHubWebhookEvent.valueOf(evt.name()))
+				.collect(Collectors.toList())
+				.toArray(new GitHubWebhookEvent[delegate.getEvents().size()]);
 	}
 
 	@Override
@@ -26,12 +34,7 @@ public class KohsukeGitHubWebhook implements GitHubWebhook {
 
 	@Override
 	public GitHubWebhookEvent[] getEvents() {
-		return delegate
-			.getEvents()
-			.stream()
-			.map(evt -> GitHubWebhookEvent.valueOf(evt.name()))
-			.collect(Collectors.toList())
-			.toArray(new GitHubWebhookEvent[delegate.getEvents().size()]);
+		return events;
 	}
 	
 }
