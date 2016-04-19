@@ -1,21 +1,17 @@
 package org.kontinuity.catapult.service.openshift.impl;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kontinuity.catapult.service.openshift.api.DuplicateProjectException;
-import org.kontinuity.catapult.service.openshift.api.OpenShiftApiUrl;
-import org.kontinuity.catapult.service.openshift.api.OpenShiftProject;
-import org.kontinuity.catapult.service.openshift.api.OpenShiftService;
-import org.kontinuity.catapult.service.openshift.api.OpenShiftServiceFactory;
+import org.kontinuity.catapult.service.openshift.api.*;
 import org.kontinuity.catapult.service.openshift.spi.OpenShiftServiceSpi;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author <a href="mailto:alr@redhat.com">Andrew Lee Rubinger</a>
