@@ -53,7 +53,7 @@ final class KohsukeGitHubServiceImpl implements GitHubService, GitHubServiceSpi 
      */
     @Override
     public GitHubRepository fork(final String repositoryFullName) throws NoSuchRepositoryException,
-            IllegalArgumentException {
+    		IllegalArgumentException {
         // Precondition checks
         if (repositoryFullName == null || repositoryFullName.isEmpty()) {
             throw new IllegalArgumentException("repository name must be specified");
@@ -87,7 +87,7 @@ final class KohsukeGitHubServiceImpl implements GitHubService, GitHubServiceSpi 
                 newlyCreatedRepo = delegate.getRepository(targetRepoFullName);
             } catch (final IOException ioe) {
                 // Throw an exception if this error is anything other than not found repo
-                if (!this.isRepoNotFound(ioe)) {
+                if (!KohsukeGitHubServiceImpl.isRepoNotFound(ioe)) {
                     throw new RuntimeException("Error in not find newly-created repo " + targetRepoFullName, ioe);
                 }
             }
@@ -121,9 +121,13 @@ final class KohsukeGitHubServiceImpl implements GitHubService, GitHubServiceSpi 
      * {@inheritDoc}
      */
     @Override
-    public GitHubRepository createRepository(String repositoryName, String description, String homepage,
-                                   boolean has_issues, boolean has_wiki, boolean has_downloads)
-            throws IOException, IllegalArgumentException {
+    public GitHubRepository createRepository(String repositoryName,
+                                   String description,
+                                   String homepage,
+                                   boolean hasIssues,
+                                   boolean hasWiki,
+                                   boolean hasDownloads) throws IOException, IllegalArgumentException
+    {
         // Precondition checks
         if (repositoryName == null || repositoryName.isEmpty()) {
             throw new IllegalArgumentException("repository name must be specified");
@@ -133,9 +137,9 @@ final class KohsukeGitHubServiceImpl implements GitHubService, GitHubServiceSpi 
                 .description(description)
                 .private_(false)
                 .homepage(homepage)
-                .issues(has_issues)
-                .downloads(has_downloads)
-                .wiki(has_wiki)
+                .issues(hasIssues)
+                .downloads(hasDownloads)
+                .wiki(hasWiki)
                 .create();
 
         // Wrap in our API view and return
@@ -244,9 +248,9 @@ final class KohsukeGitHubServiceImpl implements GitHubService, GitHubServiceSpi 
      * @param ioe
      * @return
      */
-    private boolean isRepoNotFound(final IOException ioe) {
+    private static boolean isRepoNotFound(final IOException ioe) {
         assert ioe != null : "ioe is required";
-        return (ioe.getClass() == FileNotFoundException.class &&
-                ioe.getMessage().contains(MSG_NOT_FOUND));
+        return ioe.getClass() == FileNotFoundException.class &&
+                ioe.getMessage().contains(MSG_NOT_FOUND);
     }
 }

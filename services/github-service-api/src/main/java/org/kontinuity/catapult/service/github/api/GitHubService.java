@@ -22,8 +22,7 @@ public interface GitHubService {
      */
     GitHubRepository fork(String repositoryFullName) throws NoSuchRepositoryException,
             IllegalArgumentException;
-
-
+    
     /**
      * Creates a webhook in the GitHub repository.
      *
@@ -31,11 +30,12 @@ public interface GitHubService {
      * @param webhookUrl - the URL of the webhook
      * @param events - the events that trigger the webhook; at least one is required
      * @throws IllegalArgumentException If any of the parameters are unspecified
-     * @return
+     * @return the created {@link GitHubWebhook}
      */
     GitHubWebhook createWebhook(GitHubRepository repository,
                                 URL webhookUrl,
                                 GitHubWebhookEvent... events)
             throws IllegalArgumentException;
+
     
 }
