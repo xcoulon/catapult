@@ -3,6 +3,7 @@ package org.kontinuity.catapult.service.github.spi;
 import java.io.IOException;
 import org.kontinuity.catapult.service.github.api.GitHubRepository;
 import org.kontinuity.catapult.service.github.api.GitHubService;
+import org.kontinuity.catapult.service.github.api.GitHubWebhook;
 
 public interface GitHubServiceSpi extends GitHubService {
 
@@ -32,12 +33,12 @@ public interface GitHubServiceSpi extends GitHubService {
     void deleteRepository(final GitHubRepository repository) throws IllegalArgumentException;
     
     /**
-     * Deletes all webhooks in a specific GitHub repository
+     * Deletes a webhook in a specific GitHub repository
      * 
      * @param repository - the value object that represents the GitHub repository
-     * @throws IOException
-     * @throws IllegalArgumentException If the parameter is unspecified
+     * @param webhook - the value object that represents the GitHub webhook
+     * @throws IllegalArgumentException If either parameter is unspecified
      */
-    void deleteWebhooks(final GitHubRepository repository) throws IllegalArgumentException;
+    void deleteWebhook(final GitHubRepository repository, GitHubWebhook webhook) throws IllegalArgumentException;
     
 }

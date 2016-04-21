@@ -79,7 +79,7 @@ public class GitHubServiceIT {
     	Assert.assertNotNull(webhook);
     	Assert.assertEquals(webhookUrl.toString(), webhook.getUrl());
     	// After the test removes all webhooks
-    	((GitHubServiceSpi)gitHubService).deleteWebhooks(targetRepo);    	
+    	((GitHubServiceSpi)gitHubService).deleteWebhook(targetRepo, webhook);    	
     }
 
 }
