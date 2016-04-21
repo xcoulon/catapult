@@ -67,7 +67,7 @@ final class KohsukeGitHubServiceImpl implements GitHubService, GitHubServiceSpi 
             source = delegate.getRepository(repositoryFullName);
         } catch (final IOException ioe) {
             // Check for repo not found (this is how Kohsuke Java Client reports the error)
-            if (isRepoNotFound(ioe)) {
+            if (this.isRepoNotFound(ioe)) {
                 throw new NoSuchRepositoryException("Could not fork specified repository "
                         + repositoryFullName + " because it could not be found.");
             }
