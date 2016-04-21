@@ -11,23 +11,16 @@ node{
         .withPrivileged(true)
         .withSecret('jenkins-maven-settings','/root/.m2')
         .inside {
-            sh 'mvn -Dmaven.test.failure.ignore clean verify'
-            step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
-        }
-
-    stage 'build and install'
-        kubernetes.pod('deploypod').withImage('maven')
-        .withPrivileged(true)
-        .withSecret('jenkins-maven-settings','/root/.m2')
-        .inside {
             try {
-                sh 'mvn install'
+                sh 'mvn -Dmaven.test.failure.ignore clean install'
+                step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
             }
             catch(e) {
                 currentBuild.result = 'FAILURE'
-                email_recipients = getBinding().getVariable("EMAIL")
-                step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: email_recipients, sendToIndividuals: false])
                 throw e
+            }
+            finally {
+                processStageResult()
             }
         }
         
@@ -48,31 +41,31 @@ node{
                         kubernetes.pod('itpod').withImage('maven')
                         .withPrivileged(true)
                         .withSecret('jenkins-maven-settings','/root/.m2')
+                        .withEnvVar('KONTINUITY_CATAPULT_OPENSHIFT_URL',"${OPENSHIFT_MASTER_URL}")
                         .inside {
                             try {
-                                sh """
-                                    export KONTINUITY_CATAPULT_OPENSHIFT_URL=${OPENSHIFT_MASTER_URL}
-                                    mvn -Dmaven.test.failure.ignore clean verify -Pit
-                                """
-
-                                step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
-
-                                sh """
-                                    export KONTINUITY_CATAPULT_OPENSHIFT_URL=${OPENSHIFT_MASTER_URL}
-                                    mvn clean verify -Pit
-                                """                                
+                                sh "mvn -Dmaven.test.failure.ignore clean verify -Pit"
+                                step([$class: 'JUnitResultArchiver', testResults: '**/target/failsafe-reports/*.xml'])
                             }
                             catch(e) {
                                 currentBuild.result = 'FAILURE'
-                                email_recipients = getBinding().getVariable("EMAIL")
-                                step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: email_recipients, sendToIndividuals: false])
                                 throw e
+                            }
+                            finally {
+                                processStageResult()
                             }
                         }
                     }
                 }
-            
             }
         }
+    }
+}
+
+def processStageResult() {
+    step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: "${env.EMAIL}", sendToIndividuals: false])
+
+    if (currentBuild.result != null) {
+        sh "exit 0"
     }
 }
