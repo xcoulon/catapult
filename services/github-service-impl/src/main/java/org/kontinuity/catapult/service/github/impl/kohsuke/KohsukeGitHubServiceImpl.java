@@ -205,6 +205,9 @@ final class KohsukeGitHubServiceImpl implements GitHubService, GitHubServiceSpi 
     	if(repository == null) {
     		throw new IllegalArgumentException("repository must be specified");
     	}
+        if(webhook == null) {
+            throw new IllegalArgumentException("webhook must be specified");
+        }
     	final GHRepository repo;
     	try {
     		repo = delegate.getRepository(repository.getFullName());
