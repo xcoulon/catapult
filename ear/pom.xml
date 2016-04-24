@@ -67,15 +67,6 @@
                     </modules>
                 </configuration>
             </plugin>
-            <!-- The WildFly plug-in deploys your ear to a local JBoss EAP container -->
-            <plugin>
-                <groupId>org.wildfly.plugins</groupId>
-                <artifactId>wildfly-maven-plugin</artifactId>
-                <version>${version.wildfly.maven.plugin}</version>
-                <configuration>
-                    <skip>false</skip>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 

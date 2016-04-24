@@ -6,24 +6,21 @@
  */
 package org.kontinuity.catapult.service.github.impl.kohsuke;
 
+import com.squareup.okhttp.Cache;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.OkUrlFactory;
+import org.kohsuke.github.GitHub;
+import org.kohsuke.github.GitHubBuilder;
+import org.kohsuke.github.extras.OkHttpConnector;
+import org.kontinuity.catapult.service.github.api.GitHubService;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 import java.io.File;
 import java.io.IOException;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-
-import org.kohsuke.github.GitHub;
-import org.kohsuke.github.GitHubBuilder;
-import org.kohsuke.github.extras.OkHttpConnector;
-import org.kontinuity.catapult.service.github.api.GitHubService;
-import org.kontinuity.catapult.service.github.utils.SystemUtils;
-
-import com.squareup.okhttp.Cache;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.OkUrlFactory;
 
 /**
  * Creates {@link GitHubService} instances using the {@link ServiceLoader} pattern to decouple
@@ -94,7 +91,7 @@ public class GitHubServiceProducer {
 	@Produces
 	@GitHubUsername
 	public String getGitHubUsername() {
-		return SystemUtils.getPropertyOrEnvVariable(GITHUB_USERNAME);
+		return GitHubCredentials.getUsername();
 	}
 
 	/**
@@ -104,7 +101,7 @@ public class GitHubServiceProducer {
 	@Produces
 	@GitHubToken
 	public String getGitHubToken() {
-		return SystemUtils.getPropertyOrEnvVariable(GITHUB_TOKEN);
+		return GitHubCredentials.getToken();
 	}
 	
 }

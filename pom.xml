@@ -19,16 +19,17 @@
         <!-- WildFly runtime version -->
         <version.wildfly>10.0.0.Final</version.wildfly>
 
+        <!-- Default runmode if "server-remote" is not specified -->
+        <arquillian.runmode>managed</arquillian.runmode>
+
         <!-- other plug-in versions -->
         <version.arquillian_universe>1.0.0.Alpha2</version.arquillian_universe>
-        <version.wildfly-arquillian-container-managed>1.1.0.Final</version.wildfly-arquillian-container-managed>
-        <!-- WildFly Maven plug-in to deploy your WAR to a local JBoss EAP 
-            container -->
-        <version.wildfly.maven.plugin>1.0.2.Final</version.wildfly.maven.plugin>
+        <version.org.arquillian.container_arquillian-container-chameleon>1.0.0.Alpha6</version.org.arquillian.container_arquillian-container-chameleon>
         <version.org.kohsuke_github-api>1.73</version.org.kohsuke_github-api>
         <version.io.fabric8_openshift-client>1.3.78</version.io.fabric8_openshift-client>
         <version.com.fasterxml.jackson>2.7.0</version.com.fasterxml.jackson>
         <version.com.squareup.okhttp>2.7.2</version.com.squareup.okhttp>
+
     </properties>
     <modules>
         <module>base</module>
@@ -127,12 +128,6 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.wildfly.arquillian</groupId>
-                <artifactId>wildfly-arquillian-container-managed</artifactId>
-                <version>${version.wildfly-arquillian-container-managed}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-yaml</artifactId>
                 <version>${version.com.fasterxml.jackson}</version>
@@ -172,6 +167,12 @@
                 <artifactId>okhttp</artifactId>
                 <version>${version.com.squareup.okhttp}</version>
             </dependency>
+            <dependency>
+                <groupId>org.arquillian.container</groupId>
+                <artifactId>arquillian-container-chameleon</artifactId>
+                <version>${version.org.arquillian.container_arquillian-container-chameleon}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
@@ -193,21 +194,15 @@
         </dependency>
     </dependencies>
     <build>
-        <plugins>
-            <!-- The WildFly plug-in deploys your ear to a local JBoss EAP 
-                container -->
-            <!-- Due to Maven's lack of intelligence with EARs we need to 
-                configure the WildFly Maven plug-in to skip deployment for all modules. We 
-                then enable it specifically in the ear module. -->
-            <plugin>
-                <groupId>org.wildfly.plugins</groupId>
-                <artifactId>wildfly-maven-plugin</artifactId>
-                <version>${version.wildfly.maven.plugin}</version>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
+
+        <!-- Filtering enables ${properties} parsing in arquillian.xml -->
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+
     </build>
     <profiles>
         <profile>
@@ -246,6 +241,13 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <!-- Server remote profile; uses a remote container adaptor -->
+        <profile>
+            <id>server-remote</id>
+            <properties>
+                <arquillian.runmode>remote</arquillian.runmode>
+            </properties>
         </profile>
     </profiles>
 </project>

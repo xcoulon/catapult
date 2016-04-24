@@ -9,7 +9,7 @@ import org.kontinuity.catapult.core.api.Catapult;
 import org.kontinuity.catapult.core.api.Projectile;
 import org.kontinuity.catapult.core.api.ProjectileBuilder;
 import org.kontinuity.catapult.service.github.api.GitHubRepository;
-import org.kontinuity.catapult.service.github.impl.kohsuke.GitHubTestingCredentials;
+import org.kontinuity.catapult.service.github.impl.kohsuke.GitHubServiceProducer;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftProject;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftService;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftServiceFactory;
@@ -55,8 +55,9 @@ public class CatapultIT {
     public void fling() {
 
         // Define the projectile
+        //TODO Inject the GitHubServiceProducer
         final Projectile projectile = ProjectileBuilder.newInstance().
-                gitHubAccessToken(GitHubTestingCredentials.getToken()).
+                gitHubAccessToken(new GitHubServiceProducer().getGitHubToken()).
                 sourceGitHubRepo(NAME_GITHUB_SOURCE_REPO).build();
 
         // Fling
