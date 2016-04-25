@@ -110,3 +110,18 @@ Run the Integration Tests, Optionally Building
     * Run the integration tests and have Maven skip start/stop of the WildFly server by using the `server-remote` profile.  This may speed up your development cycle if you're doing many runs by starting your server on your own and letting it run through several test runs.
         * `$ mvn integration-test -Pit,server-remote` or `$ mvn clean install -Pit,server-remote`
         
+CI Environment
+----------------------------
+
+A Continuous Integration environment is available to build and test the application. This environment leverages many of the components from the [fabric8](http://fabric8.io/) tooling including Jenkins.
+
+Access to the CI environment has the following requirements:
+
+*  Connectivity to the Red Hat VPN.
+*  Modification to the `hosts` file on the local machine to reference the hostname of the Jenkins instance as this environment is temporary and is not registered in DNS:
+
+```
+10.3.10.147 jenkins.master.distortion.example.com
+```
+
+The CI environment should now be available at [http://jenkins.master.distortion.example.com](http://jenkins.master.distortion.example.com)
