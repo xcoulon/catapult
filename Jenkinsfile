@@ -63,7 +63,7 @@ node{
 }
 
 def processStageResult() {
-    step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: "${env.EMAIL}", sendToIndividuals: false])
+    step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: "${EMAIL}", sendToIndividuals: false])
 
     if (currentBuild.result != null) {
         sh "exit 0"
