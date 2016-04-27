@@ -18,6 +18,7 @@
             <configuration>
                <failOnMissingWebXml>false</failOnMissingWebXml>
                <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+               <attachClasses>true</attachClasses>
             </configuration>
          </plugin>
       </plugins>

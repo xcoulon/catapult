@@ -49,7 +49,7 @@ public class GitHubServiceFactoryImpl implements GitHubServiceFactory {
         // Use a cache for responses so we don't count HTTP 304 against our API quota
         final File githubCacheFolder = GitHubLocalCache.INSTANCE.getCacheFolder();
         final Cache cache = new Cache(githubCacheFolder, TENMB);
-        GitHubBuilder ghb = new GitHubBuilder()
+        final GitHubBuilder ghb = new GitHubBuilder()
             .withConnector(new OkHttpConnector(new OkUrlFactory(new OkHttpClient().setCache(cache))));
         if(githubUsername == null) {
           ghb.withOAuthToken(githubToken);

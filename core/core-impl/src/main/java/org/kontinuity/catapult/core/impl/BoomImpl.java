@@ -4,6 +4,8 @@ import org.kontinuity.catapult.core.api.Boom;
 import org.kontinuity.catapult.service.github.api.GitHubRepository;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftProject;
 
+import java.net.URL;
+
 /**
  * {@inheritDoc}
  * @author <a href="mailto:alr@redhat.com">Andrew Lee Rubinger</a>
@@ -25,7 +27,6 @@ public final class BoomImpl implements Boom{
         this.gitHubRepository = gitHubRepository;
         this.openShiftProject = openShiftProject;
     }
-
 
     @Override
     public GitHubRepository getCreatedRepository() {

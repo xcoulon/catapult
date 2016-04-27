@@ -44,7 +44,11 @@
       <artifactId>catapult-web</artifactId>
       <type>war</type>
     </dependency>
-
+    <dependency>
+      <groupId>org.kontinuity.catapult</groupId>
+      <artifactId>catapult-web</artifactId>
+      <classifier>classes</classifier>
+    </dependency>
     <dependency>
       <groupId>org.jboss.arquillian</groupId>
       <artifactId>arquillian-bom</artifactId>
@@ -80,6 +84,17 @@
       <artifactId>catapult-base</artifactId>
       <version>${project.version}</version>
       <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kontinuity.catapult</groupId>
+      <artifactId>catapult-service-github-impl</artifactId>
+      <type>test-jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>javax.json</artifactId>
+      <version>1.0.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

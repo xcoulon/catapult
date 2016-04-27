@@ -29,6 +29,7 @@
         <version.io.fabric8_openshift-client>1.3.78</version.io.fabric8_openshift-client>
         <version.com.fasterxml.jackson>2.7.0</version.com.fasterxml.jackson>
         <version.com.squareup.okhttp>2.7.2</version.com.squareup.okhttp>
+        <version.org.jboss.arquillian.extension_arquillian-phantom-driver>1.2.1.Final</version.org.jboss.arquillian.extension_arquillian-phantom-driver>
 
     </properties>
     <modules>
@@ -50,6 +51,12 @@
                 <artifactId>catapult-web</artifactId>
                 <version>${project.version}</version>
                 <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>org.kontinuity.catapult</groupId>
+                <artifactId>catapult-web</artifactId>
+                <version>${project.version}</version>
+                <classifier>classes</classifier>
             </dependency>
             <dependency>
                 <groupId>org.kontinuity.catapult</groupId>
@@ -173,6 +180,12 @@
                 <groupId>org.arquillian.container</groupId>
                 <artifactId>arquillian-container-chameleon</artifactId>
                 <version>${version.org.arquillian.container_arquillian-container-chameleon}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.extension</groupId>
+                <artifactId>arquillian-phantom-driver</artifactId>
+                <version>${version.org.jboss.arquillian.extension_arquillian-phantom-driver}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
