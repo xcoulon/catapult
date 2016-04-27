@@ -1,6 +1,10 @@
 package org.kontinuity.catapult.service.openshift.impl;
 
 import org.kontinuity.catapult.service.openshift.api.OpenShiftProject;
+import org.kontinuity.catapult.service.openshift.api.OpenShiftUrl;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Implementation of a value object representing a project in OpenShift
@@ -8,6 +12,9 @@ import org.kontinuity.catapult.service.openshift.api.OpenShiftProject;
  * @author <a href="mailto:alr@redhat.com">Andrew Lee Rubinger</a>
  */
 public final class OpenShiftProjectImpl implements OpenShiftProject {
+
+    private static final String CONSOLE_OVERVIEW_URL_PREFIX = "/console/project/";
+    private static final String CONSOLE_OVERVIEW_URL_SUFFIX = "/overview/";
 
     private final String name;
 
@@ -30,5 +37,25 @@ public final class OpenShiftProjectImpl implements OpenShiftProject {
     @Override
     public String getName() {
         return name;
+    }
+
+   /**
+    * {@inheritDoc}
+    */
+    @Override
+    public URL getConsoleOverviewUrl() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(OpenShiftUrl.get());
+        sb.append(CONSOLE_OVERVIEW_URL_PREFIX);
+        sb.append(this.getName());
+        sb.append(CONSOLE_OVERVIEW_URL_SUFFIX);
+        final URL url;
+        try {
+            url = new URL(sb.toString());
+        } catch (final MalformedURLException murle){
+            throw new RuntimeException(murle);
+        }
+
+        return url;
     }
 }
