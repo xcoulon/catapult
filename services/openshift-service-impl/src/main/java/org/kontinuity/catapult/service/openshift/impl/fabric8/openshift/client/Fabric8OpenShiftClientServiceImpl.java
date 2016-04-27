@@ -3,7 +3,6 @@ package org.kontinuity.catapult.service.openshift.impl.fabric8.openshift.client;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.kubernetes.client.KubernetesClientException;
-import io.fabric8.openshift.api.model.BuildConfigList;
 import io.fabric8.openshift.api.model.ProjectRequest;
 import io.fabric8.openshift.client.DefaultOpenShiftClient;
 import io.fabric8.openshift.client.OpenShiftClient;
@@ -22,7 +21,7 @@ import java.util.logging.Logger;
  *
  * @author <a href="mailto:alr@redhat.com">Andrew Lee Rubinger</a>
  */
-final class Fabric8OpenShiftClientServiceImpl implements OpenShiftService, OpenShiftServiceSpi {
+public final class Fabric8OpenShiftClientServiceImpl implements OpenShiftService, OpenShiftServiceSpi {
 
     private static final Logger log = Logger.getLogger(Fabric8OpenShiftClientServiceImpl.class.getName());
 
