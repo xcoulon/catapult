@@ -21,10 +21,17 @@ public class Projectile {
         this.gitHubAccessToken = builder.getGitHubAccessToken();
     }
 
+    /**
+     * @return the GitHub access token we have obtained from the user as part of
+     * the OAuth process
+     */
     public String getGitHubAccessToken() {
         return gitHubAccessToken;
     }
 
+    /**
+     * @return source GitHub repository name in form "owner/repoName".
+     */
     public String getSourceGitHubRepo() {
         return sourceGitHubRepo;
     }

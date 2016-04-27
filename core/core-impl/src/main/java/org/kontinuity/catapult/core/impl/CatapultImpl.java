@@ -1,5 +1,7 @@
 package org.kontinuity.catapult.core.impl;
 
+import javax.inject.Inject;
+
 import org.kontinuity.catapult.core.api.Boom;
 import org.kontinuity.catapult.core.api.Catapult;
 import org.kontinuity.catapult.core.api.Projectile;
@@ -9,18 +11,21 @@ import org.kontinuity.catapult.service.github.impl.kohsuke.GitHubServiceProducer
 import org.kontinuity.catapult.service.openshift.api.DuplicateProjectException;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftProject;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftService;
-import org.kontinuity.catapult.service.openshift.api.OpenShiftSettings;
-import org.kontinuity.catapult.service.openshift.impl.fabric8.openshift.client.OpenShiftServiceProducer;
 
 /**
- * {@inheritDoc}
- * <p>
- * May be extended to create managed components like EJBs or CDI beans
+ * Implementation of the {@link Catapult} interface.
  *
  * @author <a href="mailto:alr@redhat.com">Andrew Lee Rubinger</a>
  */
-public abstract class CatapultBase implements Catapult {
+public class CatapultImpl implements Catapult {
 
+	@Inject
+	private OpenShiftService openShiftService;
+
+   //TODO https://github.com/redhat-kontinuity/catapult/issues/81
+   @Inject
+   private GitHubServiceProducer gitHubServiceProducer;
+	
     /**
      * {@inheritDoc}
      */
@@ -37,13 +42,9 @@ public abstract class CatapultBase implements Catapult {
 
         // Fork the repository for the user
         final String gitHubAccessToken = projectile.getGitHubAccessToken();
-        // TODO: should we use the @Inject ? In which case, how do we pass the access token ?
-        final GitHubService gitHubService = new GitHubServiceProducer().create(gitHubAccessToken, null);
+        final GitHubService gitHubService = gitHubServiceProducer.create(gitHubAccessToken, null);
         final GitHubRepository forkedRepo = gitHubService.fork(sourceRepoName);
 
-        // TODO: should we use the @Inject ? In which case, how do we pass the access token ?
-        final String openShiftApiUrl = OpenShiftSettings.getOpenShiftUrl();
-        final OpenShiftService openShiftService = new OpenShiftServiceProducer().create(openShiftApiUrl);
         //TODO
         // https://github.com/redhat-kontinuity/catapult/issues/18
         // Create a new OpenShift project for the user
