@@ -9,7 +9,7 @@ import org.kontinuity.catapult.service.github.api.GitHubService;
  *
  * @author <a href="mailto:alr@redhat.com">Andrew Lee Rubinger</a>
  */
-public final class GitHubServiceTest extends GitHubServiceTestBase {
+public final class GitHubServicePojoIT extends GitHubServiceTestBase {
 
     @Override
     GitHubService getGitHubService() {

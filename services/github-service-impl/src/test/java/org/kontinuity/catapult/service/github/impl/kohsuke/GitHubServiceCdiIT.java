@@ -24,9 +24,9 @@ import java.util.logging.Logger;
  * @author <a href="mailto:alr@redhat.com">Andrew Lee Rubinger</a>
  */
 @RunWith(Arquillian.class)
-public final class GitHubServiceIT extends GitHubServiceTestBase {
+public final class GitHubServiceCdiIT extends GitHubServiceTestBase {
 
-    private static final Logger log = Logger.getLogger(GitHubServiceIT.class.getName());
+    private static final Logger log = Logger.getLogger(GitHubServiceCdiIT.class.getName());
 
     @Inject
     private GitHubService githubService;
