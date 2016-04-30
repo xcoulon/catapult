@@ -10,7 +10,6 @@
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 	<artifactId>catapult-service-openshift-impl</artifactId>
-   <packaging>ejb</packaging>
 
    <dependencies>
       <dependency>
@@ -35,14 +34,5 @@
    </dependencies>
 
    <build>
-      <plugins>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-ejb-plugin</artifactId>
-            <configuration>
-               <ejbVersion>3.0</ejbVersion>
-            </configuration>
-         </plugin>
-      </plugins>
    </build>
 </project>

@@ -41,9 +41,8 @@
   <dependencies>
     <dependency>
       <groupId>org.kontinuity.catapult</groupId>
-      <artifactId>catapult-ear</artifactId>
-      <version>${project.version}</version>
-      <type>ear</type>
+      <artifactId>catapult-web</artifactId>
+      <type>war</type>
     </dependency>
 
     <dependency>

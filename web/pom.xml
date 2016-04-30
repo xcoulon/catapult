@@ -25,9 +25,7 @@
    <dependencies>
       <dependency>
          <groupId>org.kontinuity.catapult</groupId>
-         <artifactId>catapult-service-github-impl</artifactId>
-         <type>ejb</type>
-         <scope>provided</scope>
+         <artifactId>catapult-core-impl</artifactId>
       </dependency>
    </dependencies>
 </project>

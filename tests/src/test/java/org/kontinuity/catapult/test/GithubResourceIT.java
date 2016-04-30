@@ -11,6 +11,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -30,16 +31,15 @@ import java.util.List;
 public class GithubResourceIT {
 
     /**
-     * Deploy the catapult.ear as built since we only test via the rest endpoints
+     * Deploy the catapult.war as built since we only test via the rest endpoints
      * @return
      */
     @Deployment(testable = false)
-    public static EnterpriseArchive createDeployment() {
-        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "application-ear.ear")
-                .as(ZipImporter.class)
-                .importFrom(new File("../ear/target/catapult.ear"))
-                .as(EnterpriseArchive.class);
-        return ear;
+    public static WebArchive createDeployment() {
+        final WebArchive webArchive = ShrinkWrap.createFromZipFile(
+                WebArchive.class,
+                new File("../web/target/kontinuity-catapult.war"));
+        return webArchive;
     }
 
     @ArquillianResource
