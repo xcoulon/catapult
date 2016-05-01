@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * @author <a href="mailto:pmuir@redhat.com">Pete Muir</a>
  * @author <a href="mailto:alr@redhat.com">Andrew Lee Rubinger</a>
  */
 public class EnvironmentVariableController {

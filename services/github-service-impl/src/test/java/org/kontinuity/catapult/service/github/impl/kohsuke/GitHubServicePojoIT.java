@@ -1,6 +1,7 @@
 package org.kontinuity.catapult.service.github.impl.kohsuke;
 
 import org.kontinuity.catapult.service.github.api.GitHubService;
+import org.kontinuity.catapult.service.github.test.GitHubTestCredentials;
 
 /**
  * Unit Tests for the {@link GitHubService}
@@ -14,8 +15,8 @@ public final class GitHubServicePojoIT extends GitHubServiceTestBase {
     @Override
     GitHubService getGitHubService() {
         return new GitHubServiceFactoryImpl().create(
-                GitHubCredentials.getToken(),
-                GitHubCredentials.getUsername());
+                GitHubTestCredentials.getToken(),
+                GitHubTestCredentials.getUsername());
     }
 
 }

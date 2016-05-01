@@ -1,16 +1,17 @@
-package org.kontinuity.catapult.service.github.impl.kohsuke;
+package org.kontinuity.catapult.service.github.test;
 
 /**
  * Used to obtain the GitHub credentials from the environment
  *
  * @author <a href="mailto:alr@redhat.com">Andrew Lee Rubinger</a>
  */
-public class GitHubCredentials {
+public class GitHubTestCredentials {
 
     private static final String NAME_ENV_VAR_SYSPROP_GITHUB_USERNAME = "GITHUB_USERNAME";
     private static final String NAME_ENV_VAR_SYSPROP_GITHUB_TOKEN = "GITHUB_TOKEN";
+    private static final String NAME_ENV_VAR_SYSPROP_GITHUB_PASSWORD = "GITHUB_PASSWORD";
 
-    private GitHubCredentials(){
+    private GitHubTestCredentials(){
         // No instances
     }
 
@@ -18,14 +19,21 @@ public class GitHubCredentials {
      * @return the GitHub username
      */
     public static String getUsername(){
-        return GitHubCredentials.getEnvVarOrSysProp(NAME_ENV_VAR_SYSPROP_GITHUB_USERNAME);
+        return GitHubTestCredentials.getEnvVarOrSysProp(NAME_ENV_VAR_SYSPROP_GITHUB_USERNAME);
     }
 
     /**
      * @return the GitHub token
      */
     public static String getToken(){
-        return GitHubCredentials.getEnvVarOrSysProp(NAME_ENV_VAR_SYSPROP_GITHUB_TOKEN);
+        return GitHubTestCredentials.getEnvVarOrSysProp(NAME_ENV_VAR_SYSPROP_GITHUB_TOKEN);
+    }
+
+    /**
+     * @return the GitHub password
+     */
+    public static String getPassword(){
+        return GitHubTestCredentials.getEnvVarOrSysProp(NAME_ENV_VAR_SYSPROP_GITHUB_PASSWORD);
     }
 
     private static String getEnvVarOrSysProp(final String envVarOrSysProp){

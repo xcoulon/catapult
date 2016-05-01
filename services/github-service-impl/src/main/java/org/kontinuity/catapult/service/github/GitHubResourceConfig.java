@@ -42,6 +42,7 @@ public class GitHubResourceConfig {
 	}
 	
 	// TODO: move this code to 'catapult-base' ? (it's a duplicate from GitHubCredentials)
+	// TODO: https://github.com/redhat-kontinuity/catapult/issues/91
 	private static String getEnvVarOrSysProp(final String envVarOrSysProp) {
 		String value = System.getProperty(envVarOrSysProp);
 		if (value == null) {

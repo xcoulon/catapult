@@ -18,6 +18,11 @@
          <groupId>org.kontinuity.catapult</groupId>
          <artifactId>catapult-service-github-impl</artifactId>
       </dependency>
+       <dependency>
+           <groupId>org.kontinuity.catapult</groupId>
+           <artifactId>catapult-service-github-impl</artifactId>
+           <type>test-jar</type>
+       </dependency>
       <dependency>
          <groupId>org.kontinuity.catapult</groupId>
          <artifactId>catapult-service-openshift-impl</artifactId>

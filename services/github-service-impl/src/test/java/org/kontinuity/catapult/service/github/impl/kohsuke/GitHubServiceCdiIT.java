@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.kontinuity.catapult.service.github.api.GitHubService;
 import org.kontinuity.catapult.service.github.api.GitHubServiceFactory;
 import org.kontinuity.catapult.service.github.spi.GitHubServiceSpi;
+import org.kontinuity.catapult.service.github.test.GitHubTestCredentials;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -44,7 +45,7 @@ public final class GitHubServiceCdiIT extends GitHubServiceTestBase {
         // Create deploy file    
         WebArchive war = ShrinkWrap.create(WebArchive.class)
                 .addPackage(GitHubServiceFactoryImpl.class.getPackage())
-                .addClass(GitHubCredentials.class)
+                .addClass(GitHubTestCredentials.class)
                 .addClass(GitHubServiceSpi.class)
                 // libraries will include all classes/interfaces from the API project.
                 .addAsLibraries(dependencies);
@@ -55,6 +56,6 @@ public final class GitHubServiceCdiIT extends GitHubServiceTestBase {
 
     @Override
     protected GitHubService getGitHubService() {
-        return gitHubServiceFactory.create(GitHubCredentials.getToken());
+        return gitHubServiceFactory.create(GitHubTestCredentials.getToken());
     }
 }

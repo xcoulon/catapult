@@ -1,12 +1,5 @@
 package org.kontinuity.catapult.core.impl;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.logging.Logger;
-
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -24,10 +17,16 @@ import org.kontinuity.catapult.core.api.Catapult;
 import org.kontinuity.catapult.core.api.Projectile;
 import org.kontinuity.catapult.core.api.ProjectileBuilder;
 import org.kontinuity.catapult.service.github.api.GitHubRepository;
-import org.kontinuity.catapult.service.github.impl.kohsuke.GitHubCredentials;
+import org.kontinuity.catapult.service.github.test.GitHubTestCredentials;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftProject;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftService;
 import org.kontinuity.catapult.service.openshift.spi.OpenShiftServiceSpi;
+
+import javax.inject.Inject;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.logging.Logger;
 
 /**
  * Test cases for the {@link Catapult}
@@ -54,10 +53,12 @@ public class CatapultIT {
 	 */
 	@Deployment(testable = true)
 	public static EnterpriseArchive createDeployment() {
-		final JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "catapult-core-test.jar").addPackage(Catapult.class.getPackage())
-				.addPackage(CatapultImpl.class.getPackage())
-				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
-		// Import Maven runtime dependencies
+      final JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "catapult-core-test.jar")
+              .addPackage(Catapult.class.getPackage())
+              .addPackage(CatapultImpl.class.getPackage())
+              .addPackage(GitHubTestCredentials.class.getPackage())
+              .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+      // Import Maven runtime dependencies
 		final File[] dependencies = Maven.resolver().loadPomFromFile("pom.xml").importRuntimeDependencies().resolve()
 		        .withTransitivity().asFile();
 		// Create the deployable archive
@@ -89,7 +90,7 @@ public class CatapultIT {
         // Define the projectile
         //TODO Inject the GitHubServiceProducer
         final Projectile projectile = ProjectileBuilder.newInstance().
-                gitHubAccessToken(GitHubCredentials.getToken()).
+                gitHubAccessToken(GitHubTestCredentials.getToken()).
                 sourceGitHubRepo(NAME_GITHUB_SOURCE_REPO).build();
 
         // Fling
