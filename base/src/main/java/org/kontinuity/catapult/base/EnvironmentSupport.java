@@ -20,7 +20,7 @@ public enum EnvironmentSupport {
     * @return
     * @throws IllegalStateException If the requested environment variable or system property was not found
     */
-   public static String getEnvVarOrSysProp(final String envVarOrSysProp)
+   public String getEnvVarOrSysProp(final String envVarOrSysProp)
            throws IllegalStateException {
       String value = System.getProperty(envVarOrSysProp);
       if (value == null) {
