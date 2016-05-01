@@ -12,6 +12,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.kontinuity.catapult</groupId>
+            <artifactId>catapult-base</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.kohsuke</groupId>
             <artifactId>github-api</artifactId>
         </dependency>

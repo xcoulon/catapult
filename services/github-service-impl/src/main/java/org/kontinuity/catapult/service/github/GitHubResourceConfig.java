@@ -1,10 +1,10 @@
 package org.kontinuity.catapult.service.github;
 
-import java.text.MessageFormat;
-import java.util.logging.Logger;
+import org.kontinuity.catapult.base.EnvironmentSupport;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import java.util.logging.Logger;
 
 /**
  * CDI Bean producer to allow for injection of configuration settings in the
@@ -26,33 +26,16 @@ public class GitHubResourceConfig {
 	 * Client Secret
 	 */
 	private static String ENV_VAR_SYS_PROP_NAME_GITHUB_CLIENT_SECRET = "KONTINUITY_CATAPULT_GITHUB_APP_CLIENT_SECRET";
-
-	private final static String MESSAGE_PATTERN = "Could not find required env var or sys prop {0}";
 	
 	@Produces
 	@CatapultAppId
 	public String getCatapultApplicationId() {
-		return getEnvVarOrSysProp(ENV_VAR_SYS_PROP_NAME_GITHUB_CLIENT_ID);
+		return EnvironmentSupport.getEnvVarOrSysProp(ENV_VAR_SYS_PROP_NAME_GITHUB_CLIENT_ID);
 	}
 
 	@Produces
 	@CatapultAppOAuthSecret
 	public String getCatapultApplicationOAuthSecret() {
-		return getEnvVarOrSysProp(ENV_VAR_SYS_PROP_NAME_GITHUB_CLIENT_SECRET);
-	}
-	
-	// TODO: move this code to 'catapult-base' ? (it's a duplicate from GitHubCredentials)
-	// TODO: https://github.com/redhat-kontinuity/catapult/issues/91
-	private static String getEnvVarOrSysProp(final String envVarOrSysProp) {
-		String value = System.getProperty(envVarOrSysProp);
-		if (value == null) {
-			value = System.getenv(envVarOrSysProp);
-		}
-		if (value == null) {
-			final String errorMessage = MessageFormat.format(MESSAGE_PATTERN, envVarOrSysProp);
-			log.severe(errorMessage);
-			throw new IllegalStateException(errorMessage);
-		}
-		return value;
+		return EnvironmentSupport.getEnvVarOrSysProp(ENV_VAR_SYS_PROP_NAME_GITHUB_CLIENT_SECRET);
 	}
 }

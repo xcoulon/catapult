@@ -84,6 +84,11 @@
             <dependency>
                 <groupId>org.kontinuity.catapult</groupId>
                 <artifactId>catapult-base</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kontinuity.catapult</groupId>
+                <artifactId>catapult-base</artifactId>
                 <type>test-jar</type>
                 <scope>test</scope>
                 <version>${project.version}</version>
