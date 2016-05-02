@@ -1,7 +1,5 @@
 package org.kontinuity.catapult.service.github.spi;
 
-import java.io.IOException;
-
 import org.kontinuity.catapult.service.github.api.GitHubRepository;
 import org.kontinuity.catapult.service.github.api.GitHubService;
 import org.kontinuity.catapult.service.github.api.GitHubWebhook;
@@ -13,20 +11,15 @@ import org.kontinuity.catapult.service.github.api.GitHubWebhook;
 public interface GitHubServiceSpi extends GitHubService {
 
     /**
-     * Creates a repository with the given information.
+     * Creates a repository with the given information (name and description). The repository will be
+     * created by default with no homepage, issues, wiki downloads and will be public.
      *
      * @param repositoryName - the name of the repository
      * @param description - the repository description
-     * @param homepage - the homepage url
-     * @param hasIssues - flag for whether issue tracking should be created
-     * @param hasWiki - flag for whether a wiki should be created
-     * @param hasDownloads - flag for whether downloads should be created
      * @return the created {@link GitHubRepository}
-     * @throws IOException
      * @throws IllegalArgumentException
      */
-    GitHubRepository createRepository(String repositoryName, String description, String homepage,
-        boolean hasIssues, boolean hasWiki, boolean hasDownloads) throws IOException, IllegalArgumentException;
+    GitHubRepository createRepository(String repositoryName, String description) throws IllegalArgumentException;
 
 
     /**
