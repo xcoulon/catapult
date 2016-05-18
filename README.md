@@ -76,12 +76,22 @@ Prerequisites to Run Integration Tests
    
 3. A locally-running instance of OpenShift 
 
-    ALR has been running his tests against a local instance of Origin; instructions for getting this stood up are here:
+    The Catapult project currently depends on unreleased features in OpenShift Origin.  The recommended deployment target is the [Atomic Developer Bundle](https://github.com/projectatomic/adb-atomic-developer-bundle), which is packaged as a [Vagrant](https://www.vagrantup.com/) file.  ALR has created a fork to include the features we need in Catapult until a proper OpenShift and ADB release is performed.  Keep in mind that until these releases are performed, we're depending upon snapshot releases and thus the Catapult build will not be reproducible over time. 
+    
+    To set up the ADB environment, 
+    
+    * Install the ADB and prerequisite projects by following [these instructions](https://github.com/projectatomic/adb-atomic-developer-bundle/blob/master/docs/installing.rst)
+    * Download https://raw.githubusercontent.com/ALRubinger/adb-atomic-developer-bundle/origin-latest/components/centos/centos-openshift-setup/Vagrantfile
+        * ie. `curl https://raw.githubusercontent.com/ALRubinger/adb-atomic-developer-bundle/origin-latest/components/centos/centos-openshift-setup/Vagrantfile`
+    * `vagrant up`
+    * Set the environment variable `KONTINUITY_CATAPULT_OPENSHIFT_URL` to `https://10.1.2.2:8443` (by default that's where ADB exposes OpenShift to the host machine).  You may also hit this address in a browser to access the console.
+
+    If you prefer, you may also run tests against a local instance of Origin you build yourself; instructions for getting this stood up are here:
     
     * https://github.com/openshift/origin/blob/master/CONTRIBUTING.adoc
     
-    You may take a binary built by the OpenShift team, build an instance locally, obtain through the CDK, or use Vagrant; any way that boots OpenShift locally should be fine. 
-
+    You may take a binary built by the OpenShift team, build an instance locally, obtain through the CDK, or use Vagrant; any way that boots an `upstream/master` version of OpenShift locally should be fine.
+    
     When running, this should give you a local API to execute against at https://localhost:8443, which is where the OpenShiftService tests currently look to make their calls (by default).  To override this, you may specify the environment variable or system property `KONTINUITY_CATAPULT_OPENSHIFT_URL`.
 
 
