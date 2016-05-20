@@ -96,14 +96,15 @@ abstract class GitHubServiceTestBase {
     public void createGithubWebHook() throws Exception {
         // given
         final URL webhookUrl = new URL("https://10.1.2.2");
-        final GitHubRepository targetRepo = getGitHubService().fork(NAME_GITHUB_SOURCE_REPO);
+        final String testRepoName = "test-repo-name-from-catapult-tests";
+        final GitHubRepository targetRepo = ((GitHubServiceSpi)getGitHubService()).createRepository(testRepoName, MY_GITHUB_REPO_DESCRIPTION);
         // when
-        GitHubWebhook webhook = getGitHubService().createWebhook(targetRepo, webhookUrl, GitHubWebhookEvent.ALL);
+        final GitHubWebhook webhook = getGitHubService().createWebhook(targetRepo, webhookUrl, GitHubWebhookEvent.ALL);
         // then
         Assert.assertNotNull(webhook);
         Assert.assertEquals(webhookUrl.toString(), webhook.getUrl());
-        // After the test remove the webhook we created
-        ((GitHubServiceSpi) getGitHubService()).deleteWebhook(targetRepo, webhook);
+        // After the test remove the repo we created
+        ((GitHubServiceSpi) getGitHubService()).deleteRepository(targetRepo);
     }
 
 }
