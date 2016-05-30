@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -94,7 +95,9 @@ public class CatapultResource {
       final URI consoleOverviewUri;
       try {
          consoleOverviewUri = boom.getCreatedProject().getConsoleOverviewUrl().toURI();
-         log.info("Redirect issued to: " + consoleOverviewUri.toString());
+         if (log.isLoggable(Level.FINEST)) {
+            log.finest("Redirect issued to: " + consoleOverviewUri.toString());
+         }
       } catch (final URISyntaxException urise) {
          return Response.serverError().entity(urise).build();
       }
