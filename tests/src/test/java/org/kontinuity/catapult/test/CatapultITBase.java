@@ -1,30 +1,23 @@
 package org.kontinuity.catapult.test;
 
-import org.apache.commons.io.FileUtils;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.Resolvers;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftService;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftSettings;
-import org.kontinuity.catapult.service.openshift.impl.OpenShiftProjectImpl;
 import org.kontinuity.catapult.service.openshift.spi.OpenShiftServiceSpi;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import javax.inject.Inject;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -110,23 +103,12 @@ abstract class CatapultITBase {
    protected void assertLanding(final WebDriver driver){
       assert driver!=null:"driver must be specified";
 
-      // Ensure we land at *some* OpenShift console page until we can test for the
-      // project overview page reliably
-      //TODO https://github.com/redhat-kontinuity/catapult/issues/106
-      final String currentUrl = driver.getCurrentUrl();
-      log.info("Ended up at: " + currentUrl);
-      Assert.assertTrue(currentUrl.startsWith(OpenShiftSettings.getOpenShiftUrl()));
-
-      /*
-
       // Follow GitHub OAuth, then log into OpenShift console, and land at the
-      // project overview page.
+      // project overview page (after requesting login).
       log.info("Current URL Before Login: " + driver.getCurrentUrl());
-      log.info(driver.getPageSource());
 
+      // Log in
       final By inputUserName = By.id("inputUsername");
-      final WebDriverWait blocker = new WebDriverWait(driver, 3);
-      blocker.until(ExpectedConditions.presenceOfElementLocated(inputUserName));
       final WebElement loginField = driver.findElement(inputUserName);
       final WebElement passwordField = driver.findElement(By.id("inputPassword"));
       final WebElement logInButton = driver.findElement(By.xpath("//button[@type='submit']"));
@@ -134,12 +116,22 @@ abstract class CatapultITBase {
       passwordField.sendKeys("admin");
       logInButton.click();
 
+      // Ensure we land at *some* OpenShift console page until we can test for the
+      // project overview page reliably
+      //TODO https://github.com/openshift/origin-web-console/issues/50
+      final String currentUrl = driver.getCurrentUrl();
+      log.info("Ended up at: " + currentUrl);
+      Assert.assertTrue(currentUrl.startsWith(OpenShiftSettings.getOpenShiftUrl()));
+
+      /*
+
       // Ensure we're at the Console overview page for the project
+      final String sourceRepo = this.getSourceRepo();
       log.info("Current URL: " + driver.getCurrentUrl());
       log.info("Current Title: " + driver.getTitle());
       Assert.assertTrue(driver.getCurrentUrl().endsWith(
               "console/project/" +
-                      SOURCE_REPO.substring(SOURCE_REPO.lastIndexOf('/')) +
+                      sourceRepo.substring(sourceRepo.lastIndexOf('/')) +
                       "/overview"));
       Assert.assertEquals("OpenShift Web Console", driver.getTitle());
       */
