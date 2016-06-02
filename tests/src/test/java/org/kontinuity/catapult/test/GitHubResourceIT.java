@@ -8,6 +8,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -72,6 +73,12 @@ public class GitHubResourceIT {
 
     private WebDriver driver = WebDriverProviderHack.getWebDriver();
 
+    @After
+    public void closeWebDriver(){
+        driver.close();
+        driver.quit();
+    }
+
     @Test
     public void shouldNotHaveTokenAssociatedToStart() throws IOException {
         final String verifyUrl = deploymentUrl.toExternalForm() + PATH_VERIFY;
@@ -100,7 +107,8 @@ public class GitHubResourceIT {
         final String authUrl = deploymentUrl.toExternalForm() + PATH_AUTHORIZE_WITH_REDIRECT;
         log.info("Starting URL: " + authUrl);
 
-        performGitHubOAuth(driver, authUrl);
+        driver.navigate().to(authUrl);
+        performGitHubOAuth(driver);
 
         // Validate that we landed on the verification page, and that we've got a
         // GitHub access token in session
@@ -142,17 +150,14 @@ public class GitHubResourceIT {
                 "Was expecting an HTTP status code of 401/Unauthorized");
     }
 
-    static void performGitHubOAuth(final WebDriver driver, final String url) throws IOException {
+    static void performGitHubOAuth(final WebDriver driver) throws IOException {
         assert driver != null : "driver must be specified";
-        assert url != null : "url must be specified";
-
 
         log.info("VERSION: "+ ((RemoteWebDriver)driver).getCapabilities().getBrowserName()+ " - " +((RemoteWebDriver)driver).getCapabilities().getVersion());
 
-        driver.get(url);
         String html = driver.getPageSource();
 
-        log.info("Page1 URL:" + url);
+        log.info("Page1 URL:" + driver.getCurrentUrl());
         if (log.isLoggable(Level.FINEST)) {
             log.finest(MessageFormat.format("Page#1 html: {0}\n", html));
         }
