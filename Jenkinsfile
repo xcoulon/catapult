@@ -57,7 +57,8 @@ node{
                         kubernetes.pod('itpod').withImage('maven')
                         .withPrivileged(true)
                         .withSecret('jenkins-maven-settings','/root/.m2')
-                        .withEnvVar('KONTINUITY_CATAPULT_OPENSHIFT_URL',"${OPENSHIFT_MASTER_URL}")
+                        .withEnvVar('CATAPULT_OPENSHIFT_API_URL',"${OPENSHIFT_MASTER_URL}")
+                        .withEnvVar('CATAPULT_OPENSHIFT_CONSOLE_URL',"${OPENSHIFT_MASTER_URL}")
                         .inside {
                             try {
                                 sh "mvn -Dmaven.test.failure.ignore clean verify -Pit"
