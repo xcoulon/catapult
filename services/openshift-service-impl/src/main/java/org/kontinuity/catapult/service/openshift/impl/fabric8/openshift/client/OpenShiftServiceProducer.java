@@ -21,15 +21,13 @@ public class OpenShiftServiceProducer {
 	/**
 	 * Creates a new {@link OpenShiftService} with the specified, required url
 	 *
-	 * @param openshiftUrl
-	 *            the URL to the OpenShift instance
 	 * @return the created {@link OpenShiftService}
 	 * @throws IllegalArgumentException
 	 *             If the {@code openshiftUrl} is not specified
 	 */
 	@Produces
 	public OpenShiftService create() {
-		final String openShiftUrl = OpenShiftSettings.getOpenShiftUrl();
+		final String openShiftUrl = OpenShiftSettings.getOpenShiftApiUrl();
 
 		// Precondition checks
 		if (openShiftUrl == null) {

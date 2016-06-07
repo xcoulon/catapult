@@ -121,7 +121,7 @@ abstract class CatapultITBase {
       //TODO https://github.com/openshift/origin-web-console/issues/50
       final String currentUrl = driver.getCurrentUrl();
       log.info("Ended up at: " + currentUrl);
-      Assert.assertTrue(currentUrl.startsWith(OpenShiftSettings.getOpenShiftUrl()));
+      Assert.assertTrue(currentUrl.startsWith(OpenShiftSettings.getOpenShiftConsoleUrl()));
 
       /*
 

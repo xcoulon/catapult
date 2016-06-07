@@ -45,7 +45,7 @@ public final class OpenShiftProjectImpl implements OpenShiftProject {
     @Override
     public URL getConsoleOverviewUrl() {
         final StringBuilder sb = new StringBuilder();
-        sb.append(OpenShiftSettings.getOpenShiftUrl());
+        sb.append(OpenShiftSettings.getOpenShiftConsoleUrl());
         sb.append(CONSOLE_OVERVIEW_URL_PREFIX);
         sb.append(this.getName());
         sb.append(CONSOLE_OVERVIEW_URL_SUFFIX);

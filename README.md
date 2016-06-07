@@ -84,7 +84,8 @@ Prerequisites to Run Integration Tests
     * Download https://raw.githubusercontent.com/ALRubinger/adb-atomic-developer-bundle/origin-latest/components/centos/centos-openshift-setup/Vagrantfile
         * ie. `curl https://raw.githubusercontent.com/ALRubinger/adb-atomic-developer-bundle/origin-latest/components/centos/centos-openshift-setup/Vagrantfile`
     * `vagrant up`
-    * Set the environment variable `KONTINUITY_CATAPULT_OPENSHIFT_URL` to `https://10.1.2.2:8443` (by default that's where ADB exposes OpenShift to the host machine).  You may also hit this address in a browser to access the console.
+    * Set the environment variable `CATAPULT_OPENSHIFT_API_URL` to `https://10.1.2.2:8443`.  This is the address that Catapult uses to call upon the OpenShift API.  
+    * Set the environment variable `CATAPULT_OPENSHIFT_CONSOLE_URL` to `https://10.1.2.2:8443` (by default that's where ADB exposes OpenShift to the host machine).  This is the address used as a base to refer the user back to the OpenShift Console.  You may also use this address in a browser to access the console.
 
     If you prefer, you may also run tests against a local instance of Origin you build yourself; instructions for getting this stood up are here:
     

@@ -43,7 +43,7 @@ public class OpenShiftProjectImplTest {
 
    @Test
    public void consoleOverviewUrl() throws MalformedURLException {
-      final String expectedUrl = OpenShiftSettings.getOpenShiftUrl() +
+      final String expectedUrl = OpenShiftSettings.getOpenShiftConsoleUrl() +
               "/console/project/" +
               PROJECT_NAME +
               "/overview/";
