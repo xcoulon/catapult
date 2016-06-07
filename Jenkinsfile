@@ -58,7 +58,7 @@ node{
                         .withPrivileged(true)
                         .withSecret('jenkins-maven-settings','/root/.m2')
                         .withEnvVar('CATAPULT_OPENSHIFT_API_URL',"${OPENSHIFT_MASTER_URL}")
-                        .withEnvVar('CATAPULT_OPENSHIFT_CONSOLE_URL',"${OPENSHIFT_MASTER_URL}")
+                        .withEnvVar('CATAPULT_OPENSHIFT_CONSOLE_URL',"https://10.1.2.2:8443")
                         .inside {
                             try {
                                 sh "mvn -Dmaven.test.failure.ignore clean verify -Pit"
