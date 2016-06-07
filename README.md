@@ -64,7 +64,7 @@ Prerequisites to Run Integration Tests
             * Application Description
                 * Not required
             * Authorization callback URL
-                * `http://127.0.0.1:8080/kontinuity-catapult/api/github/callback`
+                * `http://127.0.0.1:8080/api/github/callback`
                 * You may need to replace `127.0.0.1` with your local machine's loopback binding depending upon your configuration, but this should work for the majority of cases
         * Hit "Register application"
             
