@@ -94,7 +94,18 @@ Prerequisites to Run Integration Tests
     You may take a binary built by the OpenShift team, build an instance locally, obtain through the CDK, or use Vagrant; any way that boots an `upstream/master` version of OpenShift locally should be fine.
     
     When running, this should give you a local API to execute against at https://localhost:8443, which is where the OpenShiftService tests currently look to make their calls (by default).  To override this, you may specify the environment variable or system property `KONTINUITY_CATAPULT_OPENSHIFT_URL`.
+    
+4. Configure OpenShift
 
+    For the time being, we need to do a little configuration in OpenShift to add the support we depend upon.
+    
+    * Log into OpenShift
+        * From ADB, this is done after `vagrant up` has completed:
+            * `vagrant ssh`
+        * `oc login`
+            * Use `admin`/`admin` as the username/password
+        * Add Jenkins Template Support
+            * `oc create -f https://raw.githubusercontent.com/openshift/origin/master/examples/jenkins/pipeline/jenkinstemplate.json -n openshift`
 
 Build and Run the Unit Tests
 ----------------------------
