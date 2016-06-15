@@ -14,7 +14,6 @@ import org.junit.runner.RunWith;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftService;
 import org.kontinuity.catapult.service.openshift.impl.fabric8.openshift.client.Fabric8OpenShiftClientServiceImpl;
 import org.kontinuity.catapult.service.openshift.spi.OpenShiftServiceSpi;
-import org.kontinuity.catapult.service.openshift.utils.DeleteOpenShiftProjectRule;
 
 /**
  * @author <a href="mailto:alr@redhat.com">Andrew Lee Rubinger</a>
@@ -29,7 +28,7 @@ public class OpenShiftServiceCdiIT extends OpenShiftServiceTestBase {
 	private OpenShiftService openshiftService;
 
 	@Override
-	protected OpenShiftService getOpenShiftService() {
+	public OpenShiftService getOpenShiftService() {
 		return this.openshiftService;
 	}
 	

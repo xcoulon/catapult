@@ -11,29 +11,28 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.kontinuity.catapult.service.openshift.api.DuplicateProjectException;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftProject;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftService;
 import org.kontinuity.catapult.service.openshift.spi.OpenShiftServiceSpi;
-import org.kontinuity.catapult.service.openshift.utils.DeleteOpenShiftProjectRule;
 
 /**
  * @author <a href="mailto:alr@redhat.com">Andrew Lee Rubinger</a>
  * @author <a href="mailto:rmartine@redhat.com">Ricardo Martinelli de Oliveira</a>
  * @author <a href="mailto:xcoulon@redhat.com">Xavier Coulon</a>
  */
-public abstract class OpenShiftServiceTestBase {
+public abstract class OpenShiftServiceTestBase implements OpenShiftServiceContainer {
 
     private static final Logger log = Logger.getLogger(OpenShiftServiceTestBase.class.getName());
 
     private static final String PREFIX_NAME_PROJECT = "test-project-";
 
     private URI pipelineTemplate;
-    
-    protected abstract OpenShiftService getOpenShiftService();
-    
-    public DeleteOpenShiftProjectRule deleteOpenShiftProjectRule = new DeleteOpenShiftProjectRule(((OpenShiftServiceSpi) getOpenShiftService()));
+
+    @Rule
+    public DeleteOpenShiftProjectRule deleteOpenShiftProjectRule = new DeleteOpenShiftProjectRule(this);
     
     @Before
     public void setup() {
@@ -52,7 +51,6 @@ public abstract class OpenShiftServiceTestBase {
         final String projectName = getUniqueProjectName();
         // when (just) creating the project
         final OpenShiftProject project = triggerCreateProject(projectName);
-        log.log(Level.INFO, "Created project: \'" + projectName + "\'");
         // then
         final String actualName = project.getName();
         assertEquals("returned project did not have expected name", projectName, actualName);

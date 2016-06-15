@@ -12,7 +12,7 @@ import org.kontinuity.catapult.service.openshift.impl.fabric8.openshift.client.O
 public class OpenShiftServicePojoIT extends OpenShiftServiceTestBase {
 
 	@Override
-	protected OpenShiftService getOpenShiftService() {
+	public OpenShiftService getOpenShiftService() {
 		return new OpenShiftServiceProducer().create();
 	}
 }

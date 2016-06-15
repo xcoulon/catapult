@@ -1,7 +1,8 @@
-package org.kontinuity.catapult.service.openshift.utils;
+package org.kontinuity.catapult.service.openshift.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Logger;
 
 import org.junit.rules.ExternalResource;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftProject;
@@ -12,20 +13,22 @@ import org.kontinuity.catapult.service.openshift.spi.OpenShiftServiceSpi;
  */
 public class DeleteOpenShiftProjectRule extends ExternalResource {
 
+	private static final Logger log = Logger.getLogger(DeleteOpenShiftProjectRule.class.getName());
+
 	/** the projects to delete. */
 	private final Collection<OpenShiftProject> createdProjects = new ArrayList<>();
 
-	/** the OpenShift service to call to delete the projects. */
-	private final OpenShiftServiceSpi openShiftService;
+	/** hook to the OpenShift service to call to delete the projects. */
+	private final OpenShiftServiceContainer test;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param openShiftService
-	 *            the OpenShift service to call to delete the projects.
+	 * @param test
+	 *            the test base which contains an OpenShift service to call to delete the projects.
 	 */
-	public DeleteOpenShiftProjectRule(final OpenShiftServiceSpi openShiftService) {
-		this.openShiftService = openShiftService;
+	public DeleteOpenShiftProjectRule(final OpenShiftServiceContainer test) {
+		this.test = test;
 	}
 
 	/**
@@ -47,8 +50,8 @@ public class DeleteOpenShiftProjectRule extends ExternalResource {
 	protected void after() {
 		createdProjects.forEach(project -> {
 			final String projectName = project.getName();
-			openShiftService.deleteProject(project);
-			// log.info("Deleted " + projectName);
+			final boolean deleted = ((OpenShiftServiceSpi) test.getOpenShiftService()).deleteProject(project);
+			log.info("Deleted " + projectName + ": " + deleted);
 		});
 	}
 
