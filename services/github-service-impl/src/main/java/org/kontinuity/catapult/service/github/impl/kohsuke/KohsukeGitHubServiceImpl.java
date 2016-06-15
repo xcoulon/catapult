@@ -79,7 +79,7 @@ public final class KohsukeGitHubServiceImpl implements GitHubService, GitHubServ
         }
 
         // First get the source repo
-        final GHRepository source, newlyCreatedRepo;
+        final GHRepository source;
         try {
             source = delegate.getRepository(repositoryFullName);
         } catch (final IOException ioe) {
@@ -91,12 +91,26 @@ public final class KohsukeGitHubServiceImpl implements GitHubService, GitHubServ
             throw new RuntimeException("Could not fork " + repositoryFullName, ioe);
         }
 
-        // Fork
-        try {
-           newlyCreatedRepo = source.fork();
-        } catch (final IOException ioe) {
-            throw new RuntimeException("Could not fork requested repository " + repositoryFullName, ioe);
-        }
+        // Fork (with retries as something is wonky here)
+       GHRepository newlyCreatedRepo = null;
+       final int maxRetries = 10;
+       for (int i = 0; i < maxRetries; i++) {
+          try {
+             newlyCreatedRepo = source.fork();
+             break;
+          } catch (final IOException ioe) {
+             log.info("Trying fork operation again: " + i + " due to: " + ioe.getMessage());
+             try {
+                Thread.sleep(3000);
+             } catch (final InterruptedException e) {
+                Thread.interrupted();
+                throw new RuntimeException("Interrupted while waiting for fork retry", e);
+             }
+          }
+       }
+       if (newlyCreatedRepo == null) {
+          throw new IllegalStateException("Newly created repo must be assigned; programming error");
+       }
 
         // Wrap in our API view and return
         final GitHubRepository wrapped = new KohsukeGitHubRepositoryImpl(newlyCreatedRepo);
