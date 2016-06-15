@@ -25,7 +25,7 @@ public class CatapultConsoleIT extends CatapultITBase {
 
    private static final Logger log = Logger.getLogger(CatapultConsoleIT.class.getName());
 
-   private static final String SOURCE_REPO = "redhat-kontinuity/basic-jenkinsfile";
+   private static final String SOURCE_REPO = "redhat-kontinuity/kitchensink-html5-mobile";
 
    @Deployment(name = "real", testable = false)
    public static WebArchive getRealDeployment() {
@@ -76,6 +76,14 @@ public class CatapultConsoleIT extends CatapultITBase {
             break;
          }
       }
+
+      final File scrFile2 = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+      FileUtils.copyFile(scrFile2,
+              new File(
+                      "target/" +
+                              this.getClass().getSimpleName() +
+                              "-2-consoleSelectedBeforeSubmission.png"));
+
       final WebElement submit = driver.findElement(By.id("flingSubmitButton"));
       submit.click();
 
@@ -84,12 +92,12 @@ public class CatapultConsoleIT extends CatapultITBase {
               driver);
 
       // Ensure we end up in the right place
-      final File scrFile2 = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-      FileUtils.copyFile(scrFile2,
+      final File scrFile3 = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+      FileUtils.copyFile(scrFile3,
               new File(
                       "target/" +
                               this.getClass().getSimpleName() +
-                              "-2-consoleAfterSubmission.png"));
+                              "-3-consoleAfterSubmission.png"));
       this.assertLanding(driver);
    }
 }

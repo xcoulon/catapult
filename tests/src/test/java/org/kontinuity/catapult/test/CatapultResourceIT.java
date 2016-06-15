@@ -24,7 +24,9 @@ public class CatapultResourceIT extends CatapultITBase {
    /**
     * Name of the repo on GitHub to fork into our user namespace
     */
-   private static final String SOURCE_REPO = "jboss-developer/jboss-eap-quickstarts";
+   private static final String SOURCE_REPO = "redhat-kontinuity/kitchensink-html5-mobile";
+
+   public static final String PROJECT_TEMPLATE_FILENAME = "pipelinetemplate.json";
 
    @Deployment(name = "real", testable = false)
    public static WebArchive getRealDeployment() {
@@ -55,7 +57,9 @@ public class CatapultResourceIT extends CatapultITBase {
       // Define the request URL
       final String flingUrl = this.getDeploymentUrl().toExternalForm() + PATH_FLING +
               "?source_repo=" +
-              SOURCE_REPO;
+              SOURCE_REPO +
+              "&openshift_template_file=" +
+              PROJECT_TEMPLATE_FILENAME;
       log.info("Request URL: " + flingUrl);
 
       // Execute the Fling URL which should perform all actions and dump us on the return page

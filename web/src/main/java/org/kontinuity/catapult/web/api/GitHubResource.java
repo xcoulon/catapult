@@ -21,8 +21,10 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.*;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.UUID;
@@ -214,6 +216,13 @@ public class GitHubResource
 
       // Redirect to where we said we should go
       final String redirectUrl = stateJson.getString(STATE_ATTR_REDIRECT_URL);
+      final String unencodedRedirectUrl ;
+      try {
+         unencodedRedirectUrl = URLDecoder.decode(redirectUrl, CatapultResource.UTF_8);
+      } catch (final UnsupportedEncodingException uee) {
+         throw new RuntimeException(uee);
+      }
+      log.warning("Redirect URL: " + unencodedRedirectUrl);
       if (redirectUrl == null || redirectUrl.isEmpty()) {
          return Response.serverError().entity(new IllegalStateException(MSG_NO_REDIRECT)).build();
       }

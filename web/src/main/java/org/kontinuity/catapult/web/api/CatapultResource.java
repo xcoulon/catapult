@@ -15,8 +15,10 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,9 +42,9 @@ public class CatapultResource {
     Catapult Query Parameters
     */
    private static final String QUERY_PARAM_SOURCE_REPO = "source_repo";
+   private static final String QUERY_PARAM_OPENSHIFT_TEMPLATE_FILE = "openshift_template_file";
 
-   /** the name of the file containing the template to apply on the OpenShif project. */
-   private static final String OPENSHIFT_PROJECT_TEMPLATE = "openshift_template.json";
+   static final String UTF_8 = "UTF-8";
    
    @Inject
    private Catapult catapult;
@@ -51,7 +53,8 @@ public class CatapultResource {
    @Path(PATH_FLING)
    public Response fling(
            @Context final HttpServletRequest request,
-           @NotNull @QueryParam(QUERY_PARAM_SOURCE_REPO) final String sourceGitHubRepo) {
+           @NotNull @QueryParam(QUERY_PARAM_SOURCE_REPO) final String sourceGitHubRepo,
+           @NotNull @QueryParam(QUERY_PARAM_OPENSHIFT_TEMPLATE_FILE) final String openshiftTemplateFile) {
 
       // First let's see if we have a GitHub access token stored in the session
       final String gitHubAccessToken = (String) request
@@ -69,14 +72,24 @@ public class CatapultResource {
                     '?' +
                     CatapultResource.QUERY_PARAM_SOURCE_REPO +
                     '=' +
-                    sourceGitHubRepo;
+                    sourceGitHubRepo +
+                    '&' +
+                    CatapultResource.QUERY_PARAM_OPENSHIFT_TEMPLATE_FILE +
+                    '=' +
+                    openshiftTemplateFile;
+            final String urlEncodedRedirectAfterOauthPath;
+            try {
+               urlEncodedRedirectAfterOauthPath = URLEncoder.encode(redirectAfterOAuthPath, UTF_8);
+            } catch (final UnsupportedEncodingException uee) {
+               throw new RuntimeException(uee);
+            }
             // Create the full path
             final String fullPath = new StringBuilder().
                     append(gitHubOAuthPath).
                     append('?').
                     append(GitHubResource.QUERY_PARAM_REDIRECT_URL).
                     append('=').
-                    append(redirectAfterOAuthPath).toString();
+                    append(urlEncodedRedirectAfterOauthPath).toString();
             gitHubOAuthUri = new URI(fullPath);
          } catch (final URISyntaxException urise) {
             return Response.serverError().entity(urise).build();
@@ -89,7 +102,7 @@ public class CatapultResource {
       final Projectile projectile = ProjectileBuilder.newInstance().
               sourceGitHubRepo(sourceGitHubRepo).
               gitHubAccessToken(gitHubAccessToken).
-              openshiftProjectTemplateFileName(OPENSHIFT_PROJECT_TEMPLATE).
+              openshiftProjectTemplateFileName(openshiftTemplateFile).
               build();
 
       // Fling it
