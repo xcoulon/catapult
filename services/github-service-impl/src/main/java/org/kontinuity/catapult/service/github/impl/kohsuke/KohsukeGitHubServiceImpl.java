@@ -64,7 +64,7 @@ public final class KohsukeGitHubServiceImpl implements GitHubService, GitHubServ
         }
 
         // First get the source repo
-        final GHRepository source, target;
+        final GHRepository source, newlyCreatedRepo;
         try {
             source = delegate.getRepository(repositoryFullName);
         } catch (final IOException ioe) {
@@ -78,38 +78,9 @@ public final class KohsukeGitHubServiceImpl implements GitHubService, GitHubServ
 
         // Fork
         try {
-            target = source.fork();
+           newlyCreatedRepo = source.fork();
         } catch (final IOException ioe) {
             throw new RuntimeException("Could not fork requested repository " + repositoryFullName, ioe);
-        }
-
-        // Block on the full creation of the new fork, which is an async op
-        GHRepository newlyCreatedRepo = null;
-        final String targetRepoFullName = target.getFullName();
-        for (int i = 0; i < 10; i++) {
-            try {
-                newlyCreatedRepo = delegate.getRepository(targetRepoFullName);
-            } catch (final IOException ioe) {
-                // Throw an exception if this error is anything other than not found repo
-                if (!KohsukeGitHubServiceImpl.isRepoNotFound(ioe)) {
-                    throw new RuntimeException("Error in not find newly-created repo " + targetRepoFullName, ioe);
-                }
-            }
-
-            // Still no repo?  Sleep a bit and try again
-            if (newlyCreatedRepo == null) {
-                try {
-                    Thread.sleep(3000);
-                } catch (final InterruptedException ie) {
-                    Thread.interrupted();
-                    throw new RuntimeException(ie);
-                }
-            }
-        }
-        // Still can't find it after a few tries and waiting?  Fail.
-        if (newlyCreatedRepo == null) {
-            throw new RuntimeException(repositoryFullName + " was forked into " + targetRepoFullName +
-                    " but can't find the new repository");
         }
 
         // Wrap in our API view and return
