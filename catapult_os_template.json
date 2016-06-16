@@ -12,14 +12,36 @@
     },
     "parameters":[
         {
+            "name": "NAME",
+            "displayName": "Name",
+            "description": "The name assigned to all of the frontend objects defined in this template",
+            "required": true,
+            "value": "catapult"
+        },
+        {
+            "name": "APPLICATION_DOMAIN",
+            "displayName": "Application Hostname",
+            "description": "The exposed hostname that will route to the Catapult service, if left blank a value will be defaulted.",
+            "value": ""
+        },
+        {
             "name": "KONTINUITY_CATAPULT_GITHUB_APP_CLIENT_ID",
-            "description": "The Client ID of the GitHub OAuth Application You've Registered",
+            "description": "The Client ID of the GitHub OAuth Application you've registered",
+            "displayName": "GitHub OAuth Developer Application Client ID",
             "required": true
         },
         {
             "name": "KONTINUITY_CATAPULT_GITHUB_APP_CLIENT_SECRET",
-            "description": "The Client Secret of the GitHub OAuth Application You've Registered",
+            "description": "The Client Secret of the GitHub OAuth Application you've registered",
+            "displayName": "GitHub OAuth Developer Application Client Secret",
             "required": true
+        },
+        {
+            "name": "CATAPULT_OPENSHIFT_CONSOLE_URL",
+            "description": "The base URL of the OpenShift Console (ie. https://hostname:port or https://ipaddress:port)",
+            "displayName": "OpenShift Console URL",
+            "required": true,
+            "value": "https://10.1.2.20:8443"
         }
     ],
     "objects": [
@@ -27,11 +49,10 @@
             "kind": "ImageStream",
             "apiVersion": "v1",
             "metadata": {
-                "name": "catapult",
-                "generation": 2,
+                "name": "${NAME}",
                 "creationTimestamp": null,
                 "labels": {
-                    "app": "catapult"
+                    "app": "${NAME}"
                 }
             }
         },
@@ -39,11 +60,10 @@
             "kind": "DeploymentConfig",
             "apiVersion": "v1",
             "metadata": {
-                "name": "catapult",
-                "generation": 2,
+                "name": "${NAME}",
                 "creationTimestamp": null,
                 "labels": {
-                    "app": "catapult"
+                    "app": "${NAME}"
                 }
             },
             "spec": {
@@ -67,11 +87,11 @@
                         "imageChangeParams": {
                             "automatic": true,
                             "containerNames": [
-                                "catapult"
+                                "${NAME}"
                             ],
                             "from": {
                                 "kind": "ImageStreamTag",
-                                "namespace": "catapult",
+                                "namespace": "${NAME}",
                                 "name": "catapult:latest"
                             }
                         }
@@ -80,21 +100,21 @@
                 "replicas": 1,
                 "test": false,
                 "selector": {
-                    "app": "catapult",
-                    "deploymentconfig": "catapult"
+                    "app": "${NAME}",
+                    "deploymentconfig": "${NAME}"
                 },
                 "template": {
                     "metadata": {
                         "creationTimestamp": null,
                         "labels": {
-                            "app": "catapult",
-                            "deploymentconfig": "catapult"
+                            "app": "${NAME}",
+                            "deploymentconfig": "${NAME}"
                         }
                     },
                     "spec": {
                         "containers": [
                             {
-                                "name": "catapult",
+                                "name": "${NAME}",
                                 "image": "redhatdevelopers/catapult:latest",
                                 "ports": [
                                     {
@@ -109,7 +129,7 @@
                                     },
                                     {
                                         "name": "CATAPULT_OPENSHIFT_CONSOLE_URL",
-                                        "value": "https://10.1.2.2:8443"
+                                        "value": "${CATAPULT_OPENSHIFT_CONSOLE_URL}"
                                     },
                                     {
                                         "name": "KONTINUITY_CATAPULT_GITHUB_APP_CLIENT_ID",
@@ -131,43 +151,39 @@
                         "securityContext": {}
                     }
                 }
-            },
-            "status": {
-                "observedGeneration": 2
             }
         },
         {
             "kind": "ReplicationController",
             "apiVersion": "v1",
             "metadata": {
-                "name": "catapult-1",
-                "generation": 1,
+                "name": "${NAME}-1",
                 "creationTimestamp": null,
                 "labels": {
-                    "app": "catapult",
-                    "openshift.io/deployment-config.name": "catapult"
+                    "app": "${NAME}",
+                    "openshift.io/deployment-config.name": "${NAME}"
                 }
             },
             "spec": {
                 "replicas": 1,
                 "selector": {
-                    "app": "catapult",
-                    "deployment": "catapult-1",
-                    "deploymentconfig": "catapult"
+                    "app": "${NAME}",
+                    "deployment": "${NAME}-1",
+                    "deploymentconfig": "${NAME}"
                 },
                 "template": {
                     "metadata": {
                         "creationTimestamp": null,
                         "labels": {
-                            "app": "catapult",
-                            "deployment": "catapult-1",
-                            "deploymentconfig": "catapult"
+                            "app": "${NAME}",
+                            "deployment": "${NAME}-1",
+                            "deploymentconfig": "${NAME}"
                         }
                     },
                     "spec": {
                         "containers": [
                             {
-                                "name": "catapult",
+                                "name": "${NAME}",
                                 "image": "redhatdevelopers/catapult:latest",
                                 "ports": [
                                     {
@@ -182,7 +198,7 @@
                                     },
                                     {
                                         "name": "CATAPULT_OPENSHIFT_CONSOLE_URL",
-                                        "value": "https://10.1.2.2:8443"
+                                        "value": "${CATAPULT_OPENSHIFT_CONSOLE_URL}"
                                     },
                                     {
                                         "name": "KONTINUITY_CATAPULT_GITHUB_APP_CLIENT_ID",
@@ -204,58 +220,40 @@
                         "securityContext": {}
                     }
                 }
-            },
-            "status": {
-                "replicas": 0
             }
         },
         {
             "kind": "Route",
             "apiVersion": "v1",
             "metadata": {
-                "name": "catapult",
+                "name": "${NAME}",
                 "creationTimestamp": null,
                 "labels": {
-                    "app": "catapult"
+                    "app": "${NAME}"
                 },
                 "annotations": {
                     "openshift.io/host.generated": "true"
                 }
             },
             "spec": {
-                "host": "catapult-catapult.centos7-adb.10.1.2.2.xip.io",
+                "host": "${APPLICATION_DOMAIN}",
                 "to": {
                     "kind": "Service",
-                    "name": "catapult"
+                    "name": "${NAME}"
                 },
                 "port": {
                     "targetPort": "8080-tcp"
                 }
-            },
-            "status": {
-                "ingress": [
-                    {
-                        "host": "catapult-catapult.centos7-adb.10.1.2.2.xip.io",
-                        "routerName": "router",
-                        "conditions": [
-                            {
-                                "type": "Admitted",
-                                "status": "True",
-                                "lastTransitionTime": "2016-06-08T06:15:27Z"
-                            }
-                        ]
-                    }
-                ]
             }
         },
         {
             "kind": "Service",
             "apiVersion": "v1",
             "metadata": {
-                "name": "catapult",
+                "name": "${NAME}",
                 "creationTimestamp": null,
                 "labels": {
-                    "app": "catapult"
+                    "app": "${NAME}"
                 }
             },
             "spec": {
@@ -268,14 +266,11 @@
                     }
                 ],
                 "selector": {
-                    "app": "catapult",
-                    "deploymentconfig": "catapult"
+                    "app": "${NAME}",
+                    "deploymentconfig": "${NAME}"
                 },
                 "type": "ClusterIP",
                 "sessionAffinity": "None"
-            },
-            "status": {
-                "loadBalancer": {}
             }
         }
     ]
