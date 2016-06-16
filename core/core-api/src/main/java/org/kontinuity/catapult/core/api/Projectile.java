@@ -12,8 +12,7 @@ public class Projectile {
 
     private final String gitHubAccessToken;
 
-    /** the name of the file in the repo that contains the pipeline template. */
-	private String openshiftProjectTemplateFileName = "pipelinetemplate.json";
+	private final String openShiftProjectName;
 
     /**
      * Package-level access; to be invoked by {@link ProjectileBuilder}
@@ -22,7 +21,7 @@ public class Projectile {
     Projectile(final ProjectileBuilder builder){
         this.sourceGitHubRepo = builder.getSourceGitHubRepo();
         this.gitHubAccessToken = builder.getGitHubAccessToken();
-        this.openshiftProjectTemplateFileName = builder.getOpenShiftProjectTemplateFileName();
+        this.openShiftProjectName = builder.getOpenShiftProjectName();
     }
 
     /**
@@ -40,11 +39,8 @@ public class Projectile {
         return this.sourceGitHubRepo;
     }
 
-    /**
-	 * @return the name of the file that contains the pipeline template to apply
-	 *         on the OpenShift project.
-	 */
-	public String getOpenShiftProjectTemplateFileName() {
-		return this.openshiftProjectTemplateFileName;
+	public String getOpenShiftProjectName() {
+		return this.openShiftProjectName;
 	}
+
 }

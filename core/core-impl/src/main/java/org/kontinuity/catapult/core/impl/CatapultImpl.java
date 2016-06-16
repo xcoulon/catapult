@@ -1,7 +1,5 @@
 package org.kontinuity.catapult.core.impl;
 
-import java.net.URI;
-
 import javax.inject.Inject;
 
 import org.kontinuity.catapult.core.api.Boom;
@@ -50,14 +48,11 @@ public class CatapultImpl implements Catapult {
         // https://github.com/redhat-kontinuity/catapult/issues/18
         // Create a new OpenShift project for the user
         final String forkedRepoName = forkedRepo.getFullName();
-        final String projectName = forkedRepoName.substring(forkedRepoName.lastIndexOf('/') + 1);
+        final String projectName = projectile.getOpenShiftProjectName();
         final OpenShiftProject createdProject;
         try {
             createdProject = openShiftService.createProject(projectName);
-            final URI projectTemplateDownloadUri = forkedRepo.getDownloadUri(projectile.getOpenShiftProjectTemplateFileName());
-            if(projectTemplateDownloadUri != null) { 
-            	openShiftService.configureProject(createdProject, forkedRepo.getGitCloneUri(), projectTemplateDownloadUri);
-            }
+            openShiftService.configureProject(createdProject, forkedRepo.getGitCloneUri());
         } catch (final DuplicateProjectException dpe) {
             //TODO
             /*

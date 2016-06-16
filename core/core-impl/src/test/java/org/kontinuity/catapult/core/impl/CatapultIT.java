@@ -1,5 +1,7 @@
 package org.kontinuity.catapult.core.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,6 +9,7 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
+import org.assertj.core.api.Assertions;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -30,6 +33,7 @@ import org.kontinuity.catapult.service.github.spi.GitHubServiceSpi;
 import org.kontinuity.catapult.service.github.test.GitHubTestCredentials;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftProject;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftService;
+import org.kontinuity.catapult.service.openshift.impl.OpenShiftResourceImpl;
 import org.kontinuity.catapult.service.openshift.spi.OpenShiftServiceSpi;
 
 /**
@@ -44,9 +48,11 @@ public class CatapultIT {
     private static final Logger log = Logger.getLogger(CatapultIT.class.getName());
     private static final String GITHUB_SOURCE_REPO_NAME = "kitchensink-html5-mobile";
     private static final String GITHUB_SOURCE_REPO_FULLNAME = "redhat-kontinuity/" + GITHUB_SOURCE_REPO_NAME;
-    private static final String PROJECT_TEMPLATE_FILENAME = "pipelinetemplate.json";
     private final Collection<String> openshiftProjectsToDelete = new ArrayList<>();
+    
+    private static final String PREFIX_NAME_PROJECT = "test-project-";
 
+    
     @Inject
     private OpenShiftService openShiftService; 
     
@@ -64,7 +70,7 @@ public class CatapultIT {
 	public static WebArchive createDeployment() {
 		// Import Maven runtime dependencies
         final File[] dependencies = Maven.resolver().loadPomFromFile("pom.xml")
-                .importRuntimeDependencies().resolve().withTransitivity().asFile();
+                .importRuntimeAndTestDependencies().resolve().withTransitivity().asFile();
         // Create deploy file    
         final WebArchive war = ShrinkWrap.create(WebArchive.class)
         		.addPackage(Catapult.class.getPackage())
@@ -107,11 +113,12 @@ public class CatapultIT {
 
     @Test
     public void fling() {
-        // Define the projectile
+        // Define the projectile with a custom, unique OpenShift project name.
+    	final String expectedName = getUniqueProjectName();
         final Projectile projectile = ProjectileBuilder.newInstance().
                 gitHubAccessToken(GitHubTestCredentials.getToken()).
                 sourceGitHubRepo(GITHUB_SOURCE_REPO_FULLNAME).
-                openshiftProjectTemplateFileName(PROJECT_TEMPLATE_FILENAME).
+                openShiftProjectName(expectedName).
                 build();
 
         // Fling
@@ -122,13 +129,14 @@ public class CatapultIT {
         Assert.assertNotNull("repo can not be null", createdRepo);
         final OpenShiftProject createdProject = boom.getCreatedProject();
         Assert.assertNotNull("project can not be null", createdProject);
-        final String expectedName = GITHUB_SOURCE_REPO_NAME.substring(
-                GITHUB_SOURCE_REPO_NAME.lastIndexOf('/') + 1,
-                GITHUB_SOURCE_REPO_NAME.length());
         final String foundName = createdProject.getName();
         log.info("Created OpenShift project: " + foundName);
         openshiftProjectsToDelete.add(foundName);
         Assert.assertEquals(expectedName, foundName);
+		// checking that all 1 Build Config was created.
+		Assertions.assertThat(createdProject.getResources()).isNotNull().hasSize(1)
+		        .contains(new OpenShiftResourceImpl("pipeline", "BuildConfig", createdProject));
+
         /*
            Can't really assert on any of the properties of the
            new repo because they could change in GitHub and
@@ -136,4 +144,7 @@ public class CatapultIT {
          */
     }
 
+    private String getUniqueProjectName() {
+        return PREFIX_NAME_PROJECT + System.currentTimeMillis();
+    }
 }

@@ -18,44 +18,46 @@ public class ProjectileBuilderTest {
 
 	@Test(expected = IllegalStateException.class)
 	public void requiresSourceGitHubRepo() {
-		ProjectileBuilder.newInstance().gitHubAccessToken(SOME_VALUE).openshiftProjectTemplateFileName(SOME_VALUE)
-		        .build();
+		ProjectileBuilder.newInstance().gitHubAccessToken(SOME_VALUE).build();
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void requiresGitHubAccessToken() {
-		ProjectileBuilder.newInstance().sourceGitHubRepo(SOME_VALUE).openshiftProjectTemplateFileName(SOME_VALUE)
-		        .build();
+		ProjectileBuilder.newInstance().sourceGitHubRepo(SOME_VALUE).build();
 	}
 
-   @Test(expected = IllegalStateException.class)
-   public void requiresOpenshiftProjectTemplateFileName() {
-	   ProjectileBuilder.newInstance().sourceGitHubRepo(SOME_VALUE).gitHubAccessToken(SOME_VALUE).build();
-   }
-   
 	@Test(expected = IllegalStateException.class)
 	public void requiresSourceGitHubRepoNotEmpty() {
-		ProjectileBuilder.newInstance().gitHubAccessToken(SOME_VALUE).sourceGitHubRepo(EMPTY)
-		        .openshiftProjectTemplateFileName(SOME_VALUE).build();
+		ProjectileBuilder.newInstance().gitHubAccessToken(SOME_VALUE).sourceGitHubRepo(EMPTY).build();
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void requiresGitHubAccessTokenNotEmpty() {
-		ProjectileBuilder.newInstance().sourceGitHubRepo(SOME_VALUE).gitHubAccessToken(EMPTY)
-		        .openshiftProjectTemplateFileName(SOME_VALUE).build();
+		ProjectileBuilder.newInstance().sourceGitHubRepo(SOME_VALUE).gitHubAccessToken(EMPTY).build();
 	}
 
-	@Test(expected = IllegalStateException.class)
-	public void requiresOpenshiftProjectTemplateFileNameNotEmpty() {
-		ProjectileBuilder.newInstance().sourceGitHubRepo(SOME_VALUE).gitHubAccessToken(SOME_VALUE)
-		        .openshiftProjectTemplateFileName(EMPTY).build();
-	}
-   
 	@Test
-	public void createsInstance() {
-		final Projectile projectile = ProjectileBuilder.newInstance().sourceGitHubRepo(SOME_VALUE)
-		        .gitHubAccessToken(SOME_VALUE).openshiftProjectTemplateFileName(SOME_VALUE).build();
+	public void createsInstanceWithSimpleRepoName() {
+		final Projectile projectile = ProjectileBuilder.newInstance().sourceGitHubRepo("https://github.com/foo/bar")
+		        .gitHubAccessToken(SOME_VALUE).build();
 		Assert.assertNotNull(projectile);
+		Assert.assertEquals(projectile.getOpenShiftProjectName(), "bar");
 	}
 
+	@Test
+	public void createsInstanceWithFullRepoName() {
+		final Projectile projectile = ProjectileBuilder.newInstance().sourceGitHubRepo("https://github.com/foo/bar.git")
+				.gitHubAccessToken(SOME_VALUE).build();
+		Assert.assertNotNull(projectile);
+		Assert.assertEquals("bar", projectile.getOpenShiftProjectName());
+	}
+
+	@Test
+	public void createsInstanceWithCustomRepoName() {
+		final Projectile projectile = ProjectileBuilder.newInstance().sourceGitHubRepo("https://github.com/foo/bar.git")
+				.gitHubAccessToken(SOME_VALUE).openShiftProjectName("BAZ").build();
+		Assert.assertNotNull(projectile);
+		Assert.assertEquals(projectile.getOpenShiftProjectName(), "BAZ");
+	}
+	
 }

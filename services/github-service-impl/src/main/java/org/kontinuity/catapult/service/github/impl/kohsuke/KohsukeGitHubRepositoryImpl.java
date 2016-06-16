@@ -1,12 +1,9 @@
 package org.kontinuity.catapult.service.github.impl.kohsuke;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.logging.Logger;
 
-import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHRepository;
 import org.kontinuity.catapult.service.github.api.GitHubRepository;
 
@@ -51,23 +48,6 @@ class KohsukeGitHubRepositoryImpl implements GitHubRepository {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public URI getDownloadUri(final String path) {
-		try {
-			final GHContent fileContent = delegate.getFileContent(path);
-			return new URI(fileContent.getDownloadUrl());
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(
-			        "No file named '" + path + "' could be found in repository '" + delegate.getFullName() + "'");
-		} catch (IOException | URISyntaxException e) {
-			throw new RuntimeException("Exception occurred while trying to get the download URL for file '" + path
-			        + "' in repo '" + delegate.getFullName() + "'", e);
-		}
-    }
-    
     @Override
     public URI getGitCloneUri() {
     	try {
