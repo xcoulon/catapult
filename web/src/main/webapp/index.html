@@ -3,7 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Red Hat Catapult</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    <!-- PatternFly Styles -->
+    <link rel="stylesheet" href="bower_components/patternfly/dist/css/patternfly.min.css">
+    <link rel="stylesheet" href="bower_components/patternfly/dist/css/patternfly-additions.min.css">
+
+    <!-- jQuery -->
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- Datatables, jQuery Grid Component -->
+    <!-- Note: jquery.dataTables.js must occur in the html source before patternfly*.js.-->
+    <script src="bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+
+    <!-- PatternFly Custom Componets -  Sidebar, Popovers and Datatables Customizations -->
+    <!-- Note: jquery.dataTables.js must occur in the html source before patternfly*.js.-->
+    <script src="bower_components/patternfly/dist/js/patternfly.min.js"></script>
+
+    <!-- Dynamic Form Population -->
     <script language="JavaScript">
     $(document).ready(function() {
       var appstoreURL = "https://raw.githubusercontent.com/redhat-kontinuity/appstore/master/appstore.json";
@@ -36,14 +55,70 @@
     </script>
 </head>
 <body>
-<h1>Catapult</h1>
-<form id="flingForm" action="api/catapult/fling" method="get">
-    <select required="true" id="flingSourceRepo" name="source_repo" form="flingForm">
-        <option value="">Select an option below</option>
-    </select>
-    <input type="hidden" id="openshiftTemplateFile" name="openshift_template_file">
-    <input id="flingSubmitButton" type="submit">
-</form>
+
+<nav class="navbar navbar-default navbar-pf" role="navigation">
+  <div class="navbar-header">
+    <a class="navbar-brand" href="/">
+      <img src="images/rhd.png" alt="Red Hat Developers" />
+    </a>
+  </div>
+  <div class="collapse navbar-collapse navbar-collapse-1">
+    <ul class="nav navbar-nav navbar-primary">
+      <li class="active">
+        <a href="#">Catapult</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div style="height:20px;"></div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-5 col-md-6 col-lg-7 details">
+      <p><strong>Strap yourself in.  We're going to production: <em>now</em>.</strong></p>
+      <p>
+        Choose a QuickStart Example Application from the list below.  We'll usher you into production by:
+
+        <ul>
+          <li>Forking the GitHub repository into your user namespace</li>
+          <ul>
+            <li>Yes, we'll ask permission first!</li>
+          </ul>
+          <li>Creating an OpenShift project for this application</li>
+          <li>Kicking off a pipeline to automatically build, test, and deploy the example application</li>
+        </ul>
+      </p>
+      <p>
+        You'll be able to poke around the live QuickStart.  Get the code from your new repo into your favorite IDE and make some changes as you explore your way around.  Subsequent builds will pull from your GitHub fork and go right through the pipeline we've set up for you.
+      </p>
+      <p>
+        Go get 'em.
+      </p>
+    </div><!--/.col-*-->
+  </div><!--/.row-->
+  <div class="row">
+    <div class="col-sm-7 col-md-6 col-lg-5 login">
+      <form id="flingForm" class="form-horizontal" action="api/catapult/fling" method="get" role="form">
+        <input type="hidden" id="openshiftTemplateFile" name="openshift_template_file">
+        <div class="form-group">
+          <label for="flingSourceRepo" class="col-sm-2 col-md-2 control-label">QuickStart</label>
+          <div class="col-sm-10 col-md-10">
+            <select class="form-control" required="true" id="flingSourceRepo" name="source_repo" form="flingForm" tabindex="1">
+                <option value=""></option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-4 col-sm-4 col-md-4 submit">
+            <button id="flingSubmitButton" type="submit" class="btn btn-primary btn-lg">Fling!</button>
+          </div>
+        </div>
+      </form>
+    </div><!--/.col-*-->
+  </div><!--/.row-->
+</div><!--/.container-->
+
 
 </body>
 </html>
