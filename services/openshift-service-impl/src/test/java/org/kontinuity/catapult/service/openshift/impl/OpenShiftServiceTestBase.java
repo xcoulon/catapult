@@ -29,21 +29,8 @@ public abstract class OpenShiftServiceTestBase implements OpenShiftServiceContai
 
     private static final String PREFIX_NAME_PROJECT = "test-project-";
 
-    private URI pipelineTemplate;
-
     @Rule
     public DeleteOpenShiftProjectRule deleteOpenShiftProjectRule = new DeleteOpenShiftProjectRule(this);
-    
-    @Before
-    public void setup() {
-    	try {
-    		this.pipelineTemplate = new URI(
-    				Thread.currentThread().getContextClassLoader().getResource("pipelinetemplate.json").toExternalForm());
-    	} catch (URISyntaxException e) {
-    		throw new RuntimeException(e);
-    	}
-      assertNotNull("No pipeline template available.", pipelineTemplate);
-    }
     
     @Test
     public void createProjectOnly() {
@@ -57,20 +44,20 @@ public abstract class OpenShiftServiceTestBase implements OpenShiftServiceContai
     }
 
     @Test
-    public void createProjectAndApplyTemplate() {
+    public void createProjectAndApplyTemplate() throws URISyntaxException {
     	// given
     	final String projectName = getUniqueProjectName();
     	// when creating the project and then applying the template
     	final OpenShiftProject project = triggerCreateProject(projectName);
     	log.log(Level.INFO, "Created project: \'" + projectName + "\'");
-    	getOpenShiftService().configureProject(project, null, pipelineTemplate);
+    	final URI projectGitHubRepoUri = new URI("https://github.com/redhat-kontinuity/kitchensink-html5-mobile.git");
+    	getOpenShiftService().configureProject(project, projectGitHubRepoUri);
     	// then
     	final String actualName = project.getName();
     	assertEquals("returned project did not have expected name", projectName, actualName);
-    	// checking that all 8 resources were created, asserting on a couple of resources.
-    	assertThat(project.getResources()).isNotNull().hasSize(9)
-    	.contains(new OpenShiftResourceImpl("frontend", "Service", project))
-    	.contains(new OpenShiftResourceImpl("sample-pipeline", "BuildConfig", project));
+		// checking that all 1 Build Config was created.
+		assertThat(project.getResources()).isNotNull().hasSize(1)
+		        .contains(new OpenShiftResourceImpl("pipeline", "BuildConfig", project));
     }
     
     @Test(expected = DuplicateProjectException.class)

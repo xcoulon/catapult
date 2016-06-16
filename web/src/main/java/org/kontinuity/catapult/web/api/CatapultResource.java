@@ -72,11 +72,7 @@ public class CatapultResource {
                     '?' +
                     CatapultResource.QUERY_PARAM_SOURCE_REPO +
                     '=' +
-                    sourceGitHubRepo +
-                    '&' +
-                    CatapultResource.QUERY_PARAM_OPENSHIFT_TEMPLATE_FILE +
-                    '=' +
-                    openshiftTemplateFile;
+                    sourceGitHubRepo;
             final String urlEncodedRedirectAfterOauthPath;
             try {
                urlEncodedRedirectAfterOauthPath = URLEncoder.encode(redirectAfterOAuthPath, UTF_8);
@@ -102,7 +98,6 @@ public class CatapultResource {
       final Projectile projectile = ProjectileBuilder.newInstance().
               sourceGitHubRepo(sourceGitHubRepo).
               gitHubAccessToken(gitHubAccessToken).
-              openshiftProjectTemplateFileName(openshiftTemplateFile).
               build();
 
       // Fling it

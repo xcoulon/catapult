@@ -21,17 +21,6 @@ public interface GitHubRepository {
     URI getHomepage();
 
 	/**
-	 * @param path
-	 *            the path to the file
-	 * @return the {@link URI} of the file with the given {@code} in the GitHub
-	 *         repository
-	 * @throws RuntimeException
-	 *             if no file with the given {@code path} exists in the
-	 *             repository
-	 */
-	URI getDownloadUri(String path);
-
-	/**
 	 * @return the {@link URI} to use to clone the project from GitHub
 	 */
 	URI getGitCloneUri();

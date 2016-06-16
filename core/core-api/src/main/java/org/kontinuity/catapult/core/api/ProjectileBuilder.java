@@ -20,8 +20,8 @@ public class ProjectileBuilder {
 
     private String gitHubAccessToken;
     
-    /** the name of the file in the repo that contains the pipeline template. */
-	private String openshiftProjectTemplateFileName;
+    /** the name of OpenShift project to create. */
+	private String openShiftProjectName;
 
     private ProjectileBuilder(){
         // No external instances
@@ -46,9 +46,9 @@ public class ProjectileBuilder {
     public Projectile build() throws IllegalStateException {
 
         // Precondition checks
-    	ProjectileBuilder.checkSpecified("sourceGitHubRepo", sourceGitHubRepo);
-    	ProjectileBuilder.checkSpecified("gitHubAccessToken", gitHubAccessToken);
-    	ProjectileBuilder.checkSpecified("projectTemplateFileName", openshiftProjectTemplateFileName);
+    	ProjectileBuilder.checkSpecified("sourceGitHubRepo", this.sourceGitHubRepo);
+    	ProjectileBuilder.checkSpecified("gitHubAccessToken", this.gitHubAccessToken);
+    	ProjectileBuilder.checkSpecified("openshiftProjectName", this.openShiftProjectName);
 
         // All good, so make a new instance
         final Projectile projectile = new Projectile(this);
@@ -83,12 +83,30 @@ public class ProjectileBuilder {
      */
     public ProjectileBuilder sourceGitHubRepo(final String sourceGitHubRepo) {
         this.sourceGitHubRepo = sourceGitHubRepo;
+        final int beginIndex = sourceGitHubRepo.lastIndexOf('/') + 1;
+        final int endIndex = this.sourceGitHubRepo.lastIndexOf(".git");
+        if(endIndex < 0) {
+        	this.openShiftProjectName = this.sourceGitHubRepo.substring(beginIndex);
+        } else {
+        	this.openShiftProjectName = this.sourceGitHubRepo.substring(beginIndex, endIndex);
+        }
         return this;
     }
 
     /**
+     * Sets the name of the OpenShift project to create. By default, the name is derived from 
+     * the GitHub repository to fork. Optional.
+     * @param openShiftProjectName
+     * @return This builder
+     */
+    public ProjectileBuilder openShiftProjectName(final String openShiftProjectName) {
+    	this.openShiftProjectName = openShiftProjectName;;
+    	return this;
+    }
+    
+    /**
      * Sets the GitHub access token we have obtained from the user as part of
-     * the OAuth process.  Required.
+     * the OAuth process. Required.
      *
      * @param gitHubAccessToken
      * @return This builder
@@ -99,18 +117,6 @@ public class ProjectileBuilder {
     }
 
 	/**
-	 * Sets the name of the file that contains the template to apply on the
-	 * OpenShift project. Required
-	 *
-	 * @param openshiftProjectTemplateFileName
-	 * @return This builder
-	 */
-	public ProjectileBuilder openshiftProjectTemplateFileName(final String openshiftProjectTemplateFileName) {
-		this.openshiftProjectTemplateFileName = openshiftProjectTemplateFileName;
-		return this;
-	}
-
-    /**
      * @return source GitHub repository name in form "owner/repoName".
      */
     public String getSourceGitHubRepo() {
@@ -125,11 +131,10 @@ public class ProjectileBuilder {
         return this.gitHubAccessToken;
     }
     
-    /**
-	 * @return the name of the file that contains the template to apply
-	 *         on the OpenShift project.
+	/**
+	 * @return the name of the OpenShift project to created. By default, the name of the GitHub repo to fork.
 	 */
-	public String getOpenShiftProjectTemplateFileName() {
-		return this.openshiftProjectTemplateFileName;
+	public String getOpenShiftProjectName() {
+		return this.openShiftProjectName;
 	}
 }
