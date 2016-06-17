@@ -26,8 +26,6 @@ public class CatapultResourceIT extends CatapultITBase {
     */
    private static final String SOURCE_REPO = "redhat-kontinuity/kitchensink-html5-mobile";
 
-   public static final String PROJECT_TEMPLATE_FILENAME = "pipelinetemplate.json";
-
    @Deployment(name = "real", testable = false)
    public static WebArchive getRealDeployment() {
       return Deployments.getMavenBuiltWar();
@@ -57,9 +55,7 @@ public class CatapultResourceIT extends CatapultITBase {
       // Define the request URL
       final String flingUrl = this.getDeploymentUrl().toExternalForm() + PATH_FLING +
               "?source_repo=" +
-              SOURCE_REPO +
-              "&openshift_template_file=" +
-              PROJECT_TEMPLATE_FILENAME;
+              SOURCE_REPO;
       log.info("Request URL: " + flingUrl);
 
       // Execute the Fling URL which should perform all actions and dump us on the return page

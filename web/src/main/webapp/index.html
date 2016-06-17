@@ -34,22 +34,14 @@
           console.log("Got appstore data: "+ json);
           $.each(json.repositories, function(i,repository){
             var repositoryName = repository.name;
-            var openshiftTemplateFile = repository["openshift-template-file"];
             $("#flingSourceRepo").append(
               $("<option>").attr("value", repositoryName)
-                .attr("data-openshift_template_file", openshiftTemplateFile)
                   .text(repositoryName)
             );
           })
         })
         .fail(function(jqxhr, textStatus, error){
           console.log("Could not fetch AppStore metadata: " + textStatus);
-        });
-
-        // Change the hidden field for the openshiftTemplateFile depending upon the selected option
-        $("#flingSourceRepo").change(function () {
-        var openshiftTemplateFile = $(this).find('option:selected').attr('data-openshift_template_file');
-        $("#openshiftTemplateFile").val(openshiftTemplateFile);
         });
     });
     </script>
@@ -100,7 +92,6 @@
   <div class="row">
     <div class="col-sm-7 col-md-6 col-lg-5 login">
       <form id="flingForm" class="form-horizontal" action="api/catapult/fling" method="get" role="form">
-        <input type="hidden" id="openshiftTemplateFile" name="openshift_template_file">
         <div class="form-group">
           <label for="flingSourceRepo" class="col-sm-2 col-md-2 control-label">QuickStart</label>
           <div class="col-sm-10 col-md-10">
