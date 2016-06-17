@@ -53,8 +53,7 @@ public class CatapultResource {
    @Path(PATH_FLING)
    public Response fling(
            @Context final HttpServletRequest request,
-           @NotNull @QueryParam(QUERY_PARAM_SOURCE_REPO) final String sourceGitHubRepo,
-           @NotNull @QueryParam(QUERY_PARAM_OPENSHIFT_TEMPLATE_FILE) final String openshiftTemplateFile) {
+           @NotNull @QueryParam(QUERY_PARAM_SOURCE_REPO) final String sourceGitHubRepo) {
 
       // First let's see if we have a GitHub access token stored in the session
       final String gitHubAccessToken = (String) request
