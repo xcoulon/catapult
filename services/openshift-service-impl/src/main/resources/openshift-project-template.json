@@ -22,6 +22,7 @@
       },
       "spec": {
         "triggers": [
+          {"type": "ConfigChange"}
         ],
         "source": {
           "type": "Git",
