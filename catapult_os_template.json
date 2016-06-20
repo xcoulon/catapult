@@ -41,7 +41,7 @@
             "description": "The base URL of the OpenShift Console (ie. https://hostname:port or https://ipaddress:port)",
             "displayName": "OpenShift Console URL",
             "required": true,
-            "value": "https://10.1.2.20:8443"
+            "value": "https://10.1.2.2:8443"
         }
     ],
     "objects": [
