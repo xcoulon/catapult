@@ -18,6 +18,9 @@
         "name": "pipeline",
         "labels": {
           "name": "${PROJECT}"
+        },
+        "annotations": {
+          "pipeline.alpha.openshift.io/uses": "[{\"name\": \"frontend\", \"namespace\": \"\", \"kind\": \"DeploymentConfig\"}]"
         }
       },
       "spec": {
