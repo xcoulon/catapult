@@ -1,22 +1,19 @@
 package org.kontinuity.catapult.service.openshift.impl;
 
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.junit.Rule;
+import org.junit.Test;
+import org.kontinuity.catapult.service.openshift.api.DuplicateProjectException;
+import org.kontinuity.catapult.service.openshift.api.OpenShiftProject;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.kontinuity.catapult.service.openshift.api.DuplicateProjectException;
-import org.kontinuity.catapult.service.openshift.api.OpenShiftProject;
-import org.kontinuity.catapult.service.openshift.api.OpenShiftService;
-import org.kontinuity.catapult.service.openshift.spi.OpenShiftServiceSpi;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:alr@redhat.com">Andrew Lee Rubinger</a>
@@ -50,14 +47,21 @@ public abstract class OpenShiftServiceTestBase implements OpenShiftServiceContai
     	// when creating the project and then applying the template
     	final OpenShiftProject project = triggerCreateProject(projectName);
     	log.log(Level.INFO, "Created project: \'" + projectName + "\'");
-    	final URI projectGitHubRepoUri = new URI("https://github.com/redhat-kontinuity/kitchensink-html5-mobile.git");
-    	getOpenShiftService().configureProject(project, projectGitHubRepoUri);
+
+       //TODO Issue #135 This reliance on tnozicka has to be cleared up, introduced temporarily for testing as part of #134
+    	final URI projectGitHubRepoUri = new URI("https://github.com/tnozicka/jboss-eap-quickstarts.git");
+      final URI pipelineTemplateUri = new URI("https://raw.githubusercontent.com/tnozicka/jboss-eap-quickstarts/sync-WIP/helloworld/.openshift-ci_cd/pipeline-template.yaml");
+      final String gitRef = "sync-WIP";
+
+    	getOpenShiftService().configureProject(project,
+              projectGitHubRepoUri,
+              gitRef,
+              pipelineTemplateUri);
     	// then
     	final String actualName = project.getName();
     	assertEquals("returned project did not have expected name", projectName, actualName);
-		// checking that all 1 Build Config was created.
-		assertThat(project.getResources()).isNotNull().hasSize(1)
-		        .contains(new OpenShiftResourceImpl("pipeline", "BuildConfig", project));
+		assertThat(project.getResources()).isNotNull().hasSize(1);
+      assertTrue(project.getResources().get(0).getKind().equals("BuildConfig"));
     }
     
     @Test(expected = DuplicateProjectException.class)

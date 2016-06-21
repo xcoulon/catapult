@@ -1,5 +1,6 @@
 package org.kontinuity.catapult.core.impl;
 
+import com.sun.org.apache.regexp.internal.RE;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kontinuity.catapult.core.api.Projectile;
@@ -13,51 +14,91 @@ import org.kontinuity.catapult.core.api.ProjectileBuilder;
  */
 public class ProjectileBuilderTest {
 
-   private static final String SOME_VALUE = "test";
-   private static final String EMPTY = "";
+	private static final String SOME_VALUE = "test";
+	private static final String REPO_VALUE = "ALRubinger/testrepo";
+	private static final String EMPTY = "";
 
 	@Test(expected = IllegalStateException.class)
 	public void requiresSourceGitHubRepo() {
-		ProjectileBuilder.newInstance().gitHubAccessToken(SOME_VALUE).build();
-	}
-
-	@Test(expected = IllegalStateException.class)
-	public void requiresGitHubAccessToken() {
-		ProjectileBuilder.newInstance().sourceGitHubRepo(SOME_VALUE).build();
+		this.getPopulatedBuilder().sourceGitHubRepo(null).build();
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void requiresSourceGitHubRepoNotEmpty() {
-		ProjectileBuilder.newInstance().gitHubAccessToken(SOME_VALUE).sourceGitHubRepo(EMPTY).build();
+		this.getPopulatedBuilder().sourceGitHubRepo(EMPTY).build();
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void requiresGitHubAccessToken() {
+		this.getPopulatedBuilder().gitHubAccessToken(null).build();
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void requiresGitHubAccessTokenNotEmpty() {
-		ProjectileBuilder.newInstance().sourceGitHubRepo(SOME_VALUE).gitHubAccessToken(EMPTY).build();
+		this.getPopulatedBuilder().gitHubAccessToken(EMPTY).build();
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void requiresGitRef() {
+		this.getPopulatedBuilder().gitRef(null).build();
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void requiresGitRefNotEmpty() {
+		this.getPopulatedBuilder().gitRef(EMPTY).build();
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void requiresPipelineTemplatePath() {
+		this.getPopulatedBuilder().pipelineTemplatePath(null).build();
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void requiresPipelineTemplatePathNotEmpty() {
+		this.getPopulatedBuilder().pipelineTemplatePath(EMPTY).build();
 	}
 
 	@Test
-	public void createsInstanceWithSimpleRepoName() {
-		final Projectile projectile = ProjectileBuilder.newInstance().sourceGitHubRepo("https://github.com/foo/bar")
-		        .gitHubAccessToken(SOME_VALUE).build();
-		Assert.assertNotNull(projectile);
-		Assert.assertEquals(projectile.getOpenShiftProjectName(), "bar");
+	public void createsProjectile(){
+		final Projectile projectile = this.getPopulatedBuilder().build();
+		Assert.assertNotNull("projectile should have been created", projectile);
 	}
 
 	@Test
-	public void createsInstanceWithFullRepoName() {
-		final Projectile projectile = ProjectileBuilder.newInstance().sourceGitHubRepo("https://github.com/foo/bar.git")
-				.gitHubAccessToken(SOME_VALUE).build();
-		Assert.assertNotNull(projectile);
-		Assert.assertEquals("bar", projectile.getOpenShiftProjectName());
+	public void createsProjectileWithDefaultedOpenShiftProjectName(){
+		final Projectile projectile = this.getPopulatedBuilder().openShiftProjectName(null).build();
+		Assert.assertEquals("openshiftProjectName was not defaulted correctly", "testrepo", projectile.getOpenShiftProjectName());
 	}
 
 	@Test
-	public void createsInstanceWithCustomRepoName() {
-		final Projectile projectile = ProjectileBuilder.newInstance().sourceGitHubRepo("https://github.com/foo/bar.git")
-				.gitHubAccessToken(SOME_VALUE).openShiftProjectName("BAZ").build();
-		Assert.assertNotNull(projectile);
-		Assert.assertEquals(projectile.getOpenShiftProjectName(), "BAZ");
+	public void createsProjectileWithExplicitOpenShiftProjectName(){
+		final Projectile projectile = this.getPopulatedBuilder().openShiftProjectName("changedfromtest").build();
+		Assert.assertEquals("openshiftProjectName was not set correctly", "changedfromtest", projectile.getOpenShiftProjectName());
 	}
-	
+
+	@Test(expected = IllegalStateException.class)
+	public void sourceRepoMustBeInCorrectForm(){
+		ProjectileBuilder.newInstance().sourceGitHubRepo("doesntFollowForm").build();
+	}
+
+	@Test
+	public void sourceRepoMustAcceptDashes(){
+		final Projectile projectile = this.getPopulatedBuilder()
+				.sourceGitHubRepo("ALRubinger/my-test-thing")
+				.build();
+		Assert.assertNotNull("projectile should have been created", projectile);
+	}
+
+	/**
+	 * @return A builder with all properties set so we can manually
+	 * set one property to empty and test {@link ProjectileBuilder#build()}
+	 */
+	private ProjectileBuilder getPopulatedBuilder(){
+		return ProjectileBuilder.newInstance()
+				.sourceGitHubRepo(REPO_VALUE)
+				.gitHubAccessToken(SOME_VALUE)
+				.openShiftProjectName(SOME_VALUE)
+				.gitRef(SOME_VALUE)
+				.pipelineTemplatePath(SOME_VALUE);
+	}
 }

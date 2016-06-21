@@ -12,6 +12,9 @@ import org.kontinuity.catapult.service.openshift.api.DuplicateProjectException;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftProject;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftService;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 /**
  * Implementation of the {@link Catapult} interface.
  *
@@ -47,12 +50,34 @@ public class CatapultImpl implements Catapult {
         //TODO
         // https://github.com/redhat-kontinuity/catapult/issues/18
         // Create a new OpenShift project for the user
-        final String forkedRepoName = forkedRepo.getFullName();
         final String projectName = projectile.getOpenShiftProjectName();
         final OpenShiftProject createdProject;
         try {
             createdProject = openShiftService.createProject(projectName);
-            openShiftService.configureProject(createdProject, forkedRepo.getGitCloneUri());
+
+            /*
+             * Construct the full URI for the pipeline template file,
+             * relative to the repository root
+             */
+            final StringBuilder sb = new StringBuilder();
+            sb.append("https://raw.githubusercontent.com/");
+            sb.append(projectile.getSourceGitHubRepo());
+            sb.append('/');
+            sb.append(projectile.getGitRef());
+            sb.append('/');
+            sb.append(projectile.getPipelineTemplatePath());
+            final URI pipelineTemplateUri;
+            try {
+                pipelineTemplateUri = new URI(sb.toString());
+            } catch (final URISyntaxException urise) {
+                throw new RuntimeException("Could not create URI for pipeline template path", urise);
+            }
+
+            // Configure the OpenShift project
+            openShiftService.configureProject(createdProject,
+                    forkedRepo.getGitCloneUri(),
+                    projectile.getGitRef(),
+                    pipelineTemplateUri);
         } catch (final DuplicateProjectException dpe) {
             //TODO
             /*

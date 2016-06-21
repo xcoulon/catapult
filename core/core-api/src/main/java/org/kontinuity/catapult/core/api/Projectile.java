@@ -12,7 +12,13 @@ public class Projectile {
 
     private final String gitHubAccessToken;
 
-	private final String openShiftProjectName;
+   /** the name of OpenShift project to create. */
+   private String openShiftProjectName;
+
+    /** the path to the file in the repo that contains the pipeline template. */
+    private String pipelineTemplatePath;
+
+   private final String gitRef;
 
     /**
      * Package-level access; to be invoked by {@link ProjectileBuilder}
@@ -21,7 +27,9 @@ public class Projectile {
     Projectile(final ProjectileBuilder builder){
         this.sourceGitHubRepo = builder.getSourceGitHubRepo();
         this.gitHubAccessToken = builder.getGitHubAccessToken();
-        this.openShiftProjectName = builder.getOpenShiftProjectName();
+       this.openShiftProjectName = builder.getOpenShiftProjectName();
+        this.pipelineTemplatePath = builder.getPipelineTemplatePath();
+       this.gitRef = builder.getGitRef();
     }
 
     /**
@@ -39,8 +47,18 @@ public class Projectile {
         return this.sourceGitHubRepo;
     }
 
-	public String getOpenShiftProjectName() {
-		return this.openShiftProjectName;
-	}
+   /**
+    * @return The name to use in creating the new OpenShift project
+    */
+   public String getOpenShiftProjectName() { return openShiftProjectName;  }
 
+   /**
+    * @return The path to the pipeline template file in the repo
+    */
+   public String getPipelineTemplatePath() { return pipelineTemplatePath; }
+
+   /**
+    * @return The Git reference to use
+    */
+   public String getGitRef() { return gitRef; }
 }

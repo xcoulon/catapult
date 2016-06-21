@@ -25,25 +25,51 @@
     <!-- Dynamic Form Population -->
     <script language="JavaScript">
     $(document).ready(function() {
-      var appstoreURL = "https://raw.githubusercontent.com/redhat-kontinuity/appstore/master/appstore.json";
+      var appstoreURL = "https://raw.githubusercontent.com/ALRubinger/appstore/master/appstore.json";
       console.log("Obtaining app store metadata from: " + appstoreURL);
+
+      var DATA_ATTR_NAME_GIT_URL = "data-gitUrl";
+      var DATA_ATTR_NAME_GIT_REF = "data-gitRef";
+      var DATA_ATTR_NAME_PIPELINE_TEMPLATE_PATH = "data-pipelineTemplatePath";
 
       // Populate the available options from the appstore JSON
       $.getJSON(appstoreURL)
         .done(function(json){
           console.log("Got appstore data: "+ json);
           $.each(json.repositories, function(i,repository){
-            var repositoryName = repository.name;
+            var repositoryName = repository['name'];
+            var displayName = repository['displayName'];
+            var gitRef = repository['gitRef'];
+            var pipelineTemplatePath = repository['pipelineTemplatePath'];
             $("#flingSourceRepo").append(
-              $("<option>").attr("value", repositoryName)
-                  .text(repositoryName)
+              $("<option>")
+                  .attr("value", repositoryName)
+                  .attr(DATA_ATTR_NAME_GIT_REF, gitRef)
+                  .attr(DATA_ATTR_NAME_PIPELINE_TEMPLATE_PATH, pipelineTemplatePath)
+                  .text(displayName)
             );
           })
         })
         .fail(function(jqxhr, textStatus, error){
           console.log("Could not fetch AppStore metadata: " + textStatus);
         });
-    });
+
+        // Change the hidden fields depending upon the selected option
+        $("#flingSourceRepo").change(function () {
+          setHiddenField(this,DATA_ATTR_NAME_GIT_REF,"gitRef");
+          setHiddenField(this,DATA_ATTR_NAME_PIPELINE_TEMPLATE_PATH,"pipelineTemplatePath");
+        });
+
+        /**
+         * Sets the value of the specified attribute on the specified field
+         * to the value of the specified field
+         */
+        function setHiddenField(sourceField,dataAttributeName,targetField){
+          var valueToSet = $(sourceField).find('option:selected').attr(dataAttributeName);
+          $("#"+targetField).val(valueToSet);
+          console.log("Set " + targetField + ": " + valueToSet);
+        }
+      });
     </script>
 </head>
 <body>
@@ -92,10 +118,12 @@
   <div class="row">
     <div class="col-sm-7 col-md-6 col-lg-5 login">
       <form id="flingForm" class="form-horizontal" action="api/catapult/fling" method="get" role="form">
+        <input type="hidden" id="gitRef" name="gitRef" />
+        <input type="hidden" id="pipelineTemplatePath" name="pipelineTemplatePath" />
         <div class="form-group">
           <label for="flingSourceRepo" class="col-sm-2 col-md-2 control-label">QuickStart</label>
           <div class="col-sm-10 col-md-10">
-            <select class="form-control" required="true" id="flingSourceRepo" name="source_repo" form="flingForm" tabindex="1">
+            <select class="form-control" required="true" id="flingSourceRepo" name="sourceRepo" form="flingForm" tabindex="1">
                 <option value=""></option>
             </select>
           </div>

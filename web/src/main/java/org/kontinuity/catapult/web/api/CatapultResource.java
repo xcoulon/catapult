@@ -41,8 +41,9 @@ public class CatapultResource {
    /*
     Catapult Query Parameters
     */
-   private static final String QUERY_PARAM_SOURCE_REPO = "source_repo";
-   private static final String QUERY_PARAM_OPENSHIFT_TEMPLATE_FILE = "openshift_template_file";
+   private static final String QUERY_PARAM_SOURCE_REPO = "sourceRepo";
+   private static final String QUERY_PARAM_GIT_REF = "gitRef";
+   private static final String QUERY_PARAM_PIPELINE_TEMPLATE_PATH = "pipelineTemplatePath";
 
    static final String UTF_8 = "UTF-8";
    
@@ -53,7 +54,9 @@ public class CatapultResource {
    @Path(PATH_FLING)
    public Response fling(
            @Context final HttpServletRequest request,
-           @NotNull @QueryParam(QUERY_PARAM_SOURCE_REPO) final String sourceGitHubRepo) {
+           @NotNull @QueryParam(QUERY_PARAM_SOURCE_REPO) final String sourceGitHubRepo,
+           @NotNull @QueryParam(QUERY_PARAM_GIT_REF) final String gitRef,
+           @NotNull @QueryParam(QUERY_PARAM_PIPELINE_TEMPLATE_PATH) final String pipelineTemplatePath) {
 
       // First let's see if we have a GitHub access token stored in the session
       final String gitHubAccessToken = (String) request
@@ -70,8 +73,11 @@ public class CatapultResource {
                     PATH_FLING +
                     '?' +
                     CatapultResource.QUERY_PARAM_SOURCE_REPO +
-                    '=' +
-                    sourceGitHubRepo;
+                    '=' + sourceGitHubRepo + '&' +
+                    CatapultResource.QUERY_PARAM_GIT_REF +
+                    '=' + gitRef + '&' +
+                    CatapultResource.QUERY_PARAM_PIPELINE_TEMPLATE_PATH +
+                    '=' + pipelineTemplatePath;
             final String urlEncodedRedirectAfterOauthPath;
             try {
                urlEncodedRedirectAfterOauthPath = URLEncoder.encode(redirectAfterOAuthPath, UTF_8);
@@ -94,10 +100,12 @@ public class CatapultResource {
          return Response.temporaryRedirect(gitHubOAuthUri).build();
       }
       // Construct the projectile based on input query param and the access token from the session
-      final Projectile projectile = ProjectileBuilder.newInstance().
-              sourceGitHubRepo(sourceGitHubRepo).
-              gitHubAccessToken(gitHubAccessToken).
-              build();
+      final Projectile projectile = ProjectileBuilder.newInstance()
+              .sourceGitHubRepo(sourceGitHubRepo)
+              .gitHubAccessToken(gitHubAccessToken)
+              .gitRef(gitRef)
+              .pipelineTemplatePath(pipelineTemplatePath)
+              .build();
 
       // Fling it
       final Boom boom = catapult.fling(projectile);

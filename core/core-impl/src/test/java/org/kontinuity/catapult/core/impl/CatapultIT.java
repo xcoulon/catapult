@@ -1,15 +1,5 @@
 package org.kontinuity.catapult.core.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.logging.Logger;
-
-import javax.inject.Inject;
-
-import org.assertj.core.api.Assertions;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -33,8 +23,16 @@ import org.kontinuity.catapult.service.github.spi.GitHubServiceSpi;
 import org.kontinuity.catapult.service.github.test.GitHubTestCredentials;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftProject;
 import org.kontinuity.catapult.service.openshift.api.OpenShiftService;
-import org.kontinuity.catapult.service.openshift.impl.OpenShiftResourceImpl;
 import org.kontinuity.catapult.service.openshift.spi.OpenShiftServiceSpi;
+
+import javax.inject.Inject;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.logging.Logger;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test cases for the {@link Catapult}
@@ -46,8 +44,13 @@ import org.kontinuity.catapult.service.openshift.spi.OpenShiftServiceSpi;
 public class CatapultIT {
 
     private static final Logger log = Logger.getLogger(CatapultIT.class.getName());
-    private static final String GITHUB_SOURCE_REPO_NAME = "kitchensink-html5-mobile";
-    private static final String GITHUB_SOURCE_REPO_FULLNAME = "redhat-kontinuity/" + GITHUB_SOURCE_REPO_NAME;
+
+    //TODO #135 Remove reliance on tzonicka
+    private static final String GITHUB_SOURCE_REPO_NAME = "jboss-eap-quickstarts";
+    private static final String GITHUB_SOURCE_REPO_FULLNAME = "tnozicka/" + GITHUB_SOURCE_REPO_NAME;
+    private static final String GIT_REF = "sync-WIP";
+    private static final String PIPELINE_TEMPLATE_PATH = "helloworld/.openshift-ci_cd/pipeline-template.yaml";
+
     private final Collection<String> openshiftProjectsToDelete = new ArrayList<>();
     
     private static final String PREFIX_NAME_PROJECT = "test-project-";
@@ -115,11 +118,13 @@ public class CatapultIT {
     public void fling() {
         // Define the projectile with a custom, unique OpenShift project name.
     	final String expectedName = getUniqueProjectName();
-        final Projectile projectile = ProjectileBuilder.newInstance().
-                gitHubAccessToken(GitHubTestCredentials.getToken()).
-                sourceGitHubRepo(GITHUB_SOURCE_REPO_FULLNAME).
-                openShiftProjectName(expectedName).
-                build();
+        final Projectile projectile = ProjectileBuilder.newInstance()
+                .gitHubAccessToken(GitHubTestCredentials.getToken())
+                .sourceGitHubRepo(GITHUB_SOURCE_REPO_FULLNAME)
+                .gitRef(GIT_REF)
+                .pipelineTemplatePath(PIPELINE_TEMPLATE_PATH)
+                .openShiftProjectName(expectedName)
+                .build();
 
         // Fling
         final Boom boom = catapult.fling(projectile);
@@ -133,9 +138,9 @@ public class CatapultIT {
         log.info("Created OpenShift project: " + foundName);
         openshiftProjectsToDelete.add(foundName);
         Assert.assertEquals(expectedName, foundName);
-		// checking that all 1 Build Config was created.
-		Assertions.assertThat(createdProject.getResources()).isNotNull().hasSize(1)
-		        .contains(new OpenShiftResourceImpl("pipeline", "BuildConfig", createdProject));
+		  // checking that the Build Config was created.
+        assertThat(createdProject.getResources()).isNotNull().hasSize(1);
+        assertTrue(createdProject.getResources().get(0).getKind().equals("BuildConfig"));
 
         /*
            Can't really assert on any of the properties of the

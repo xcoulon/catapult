@@ -1,19 +1,6 @@
 package org.kontinuity.catapult.service.openshift.impl.fabric8.openshift.client;
 
-import java.io.InputStream;
-import java.net.URI;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.kontinuity.catapult.service.openshift.api.DuplicateProjectException;
-import org.kontinuity.catapult.service.openshift.api.OpenShiftProject;
-import org.kontinuity.catapult.service.openshift.api.OpenShiftService;
-import org.kontinuity.catapult.service.openshift.impl.OpenShiftProjectImpl;
-import org.kontinuity.catapult.service.openshift.impl.OpenShiftResourceImpl;
-import org.kontinuity.catapult.service.openshift.spi.OpenShiftServiceSpi;
-
 import io.fabric8.kubernetes.api.Controller;
-import io.fabric8.kubernetes.api.KubernetesHelper;
 import io.fabric8.kubernetes.api.model.KubernetesList;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
@@ -22,6 +9,17 @@ import io.fabric8.openshift.api.model.ProjectRequest;
 import io.fabric8.openshift.api.model.Template;
 import io.fabric8.openshift.client.DefaultOpenShiftClient;
 import io.fabric8.openshift.client.OpenShiftClient;
+import org.kontinuity.catapult.service.openshift.api.DuplicateProjectException;
+import org.kontinuity.catapult.service.openshift.api.OpenShiftProject;
+import org.kontinuity.catapult.service.openshift.api.OpenShiftService;
+import org.kontinuity.catapult.service.openshift.impl.OpenShiftProjectImpl;
+import org.kontinuity.catapult.service.openshift.impl.OpenShiftResourceImpl;
+import org.kontinuity.catapult.service.openshift.spi.OpenShiftServiceSpi;
+
+import java.io.InputStream;
+import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Implementation of the {@link OpenShiftService} using the Fabric8
@@ -100,19 +98,24 @@ public final class Fabric8OpenShiftClientServiceImpl implements OpenShiftService
     }
     
     @Override
-    public void configureProject(final OpenShiftProject project, final URI sourceRepositoryUrl) {
+    public void configureProject(final OpenShiftProject project,
+                                 final URI sourceRepositoryUri,
+                                 final String gitRef,
+                                 final URI pipelineTemplateUri) {
 		try {
 			// look-up the OpenShift project template in this module
-			try (final InputStream openShiftProjectTemplateStream = Thread.currentThread().getContextClassLoader()
-			        .getResourceAsStream(OPENSHIFT_PROJECT_TEMPLATE)) {
+			try (final InputStream pipelineTemplateStream = pipelineTemplateUri.toURL().openStream()) {
 				// apply template
-				final Template template = (Template) KubernetesHelper.loadJson(openShiftProjectTemplateStream);
-				if (sourceRepositoryUrl != null) {
-					// set the sourceRepositoryUrl in the template
-					// 'SOURCE_REPOSITORY_URL' parameter
-					log.info("Setting the 'SOURCE_REPOSITORY_URL' parameter value to '" + sourceRepositoryUrl + "'.");
-					template.getParameters().stream().filter(p -> p.getName().equals("SOURCE_REPOSITORY_URL"))
-					        .forEach(p -> p.setValue(sourceRepositoryUrl.toString()));
+				final Template template = client.templates().load(pipelineTemplateStream).get();
+				if (sourceRepositoryUri != null) {
+					// 'GIT_URL' parameter
+					log.info("Setting the 'GIT_URL' parameter value to '" + sourceRepositoryUri + "'.");
+					template.getParameters().stream().filter(p -> p.getName().equals("GIT_URL"))
+					        .forEach(p -> p.setValue(sourceRepositoryUri.toString()));
+               // 'GIT_REF' parameter
+               log.info("Setting the 'GIT_REF' parameter value to '" + gitRef + "'.");
+               template.getParameters().stream().filter(p -> p.getName().equals("GIT_REF"))
+                       .forEach(p -> p.setValue(gitRef));
 				}
 				log.info("Deploying template '" + template.getMetadata().getName() + "' with parameters:");
 				template.getParameters().forEach(p -> log.info("\t" + p.getDisplayName() + '=' + p.getValue()));

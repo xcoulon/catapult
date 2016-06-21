@@ -26,8 +26,13 @@ public interface OpenShiftService {
      * described resources are created.
      *  
      * @param project the project in which the pipeline will be created 
-     * @param sourceRepositoryUrl the location of the source repository to build the OpenShift application from 
+     * @param sourceRepositoryUri the location of the source repository to build the OpenShift application from
+     * @param gitRef The Git ref to use for the project
+     * @param pipelineTemplateUri the location of the pipeline template file
      */
-    void configureProject(OpenShiftProject project, URI sourceRepositoryUrl);
+    void configureProject(OpenShiftProject project,
+                          URI sourceRepositoryUri,
+                          String gitRef,
+                          URI pipelineTemplateUri);
 
 }
