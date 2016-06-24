@@ -83,8 +83,17 @@ public class ProjectileBuilderTest {
 
 	@Test
 	public void sourceRepoMustAcceptDashes(){
+		this.mustAcceptDashes("ALRubinger/my-test-thing");
+	}
+
+	@Test
+	public void sourceOwnerMustAcceptDashes(){
+		this.mustAcceptDashes("redhat-organization/something-with-dashes");
+	}
+
+	private void mustAcceptDashes(final String fullRepoName){
 		final Projectile projectile = this.getPopulatedBuilder()
-				.sourceGitHubRepo("ALRubinger/my-test-thing")
+				.sourceGitHubRepo(fullRepoName)
 				.build();
 		Assert.assertNotNull("projectile should have been created", projectile);
 	}

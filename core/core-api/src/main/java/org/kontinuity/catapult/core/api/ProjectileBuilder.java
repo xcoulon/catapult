@@ -31,7 +31,7 @@ public class ProjectileBuilder {
 
    private String gitRef;
 
-   private static final Pattern REPO_PATTERN = Pattern.compile("^[\\w]+/[a-zA-Z_0-9\\-]+");
+   private static final Pattern REPO_PATTERN = Pattern.compile("^[a-zA-Z_0-9\\-]+/[a-zA-Z_0-9\\-]+");
 
     private ProjectileBuilder(){
         // No external instances
